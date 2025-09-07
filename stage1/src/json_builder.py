@@ -7,5 +7,7 @@ class JsonBuilder:
     """
 
     @staticmethod
-    def create_json():
+    def create_json(data:list[dict]):
         pass
+
+        
