@@ -1,11 +1,9 @@
-
-from typing import Generator, Optional
-from kafka import KafkaProducer, KafkaConsumer
+from kafka import KafkaProducer
 
 class KafkaPubSub:
     """Generic Kafka publisher and subscriber using kafka-python."""
 
-    def __init__(self, bootstrap_servers: str = "localhost:9092", group_id: str = "generic-consumer") -> None:
+    def __init__(self, bootstrap_servers: str, group_id: str) -> None:
         self.bootstrap_servers = bootstrap_servers
         self.producer = KafkaProducer(bootstrap_servers=self.bootstrap_servers, value_serializer=lambda v: str(v).encode("utf-8"))
         self.group_id = group_id
