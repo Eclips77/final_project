@@ -9,9 +9,12 @@ class FileReader:
     def read_file_paths(directory:str)->list[str]:
         """
         a method that returns all the file pathes in a directory
+
         Args:
-            directory path : str.
+
+            directory path str.
         Returns:
+        
                 all the files pathes in the directory.
         """
         return [os.path.join(directory, file) for file in os.listdir(directory) if os.path.isfile(os.path.join(directory, file))]
@@ -22,7 +25,7 @@ class FileReader:
         a method to get metadata about file.
 
         Args:
-            filepath str.
+            file_path str.
         Return:
                 dict of the meta data about the file.
         """
@@ -33,7 +36,8 @@ class FileReader:
                 'size': file_stats.st_size,
                 'permissions': stat.filemode(file_stats.st_mode),
                 'create_date': datetime.datetime.fromtimestamp(file_stats.st_ctime),
-                "file_name":os.path.basename(file_path)
+                "file_name":os.path.basename(file_path),
+                'file_path':file_path
             }
         else:
             logger.error(f"error create metadata from {file_path}")
