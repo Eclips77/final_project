@@ -1,6 +1,9 @@
 from pymongo import MongoClient
 from pymongo.database import Database
 from .. import config
+import logging
+
+logger = logging.getLogger(__name__)
 
 class DatabaseConnection:
     """
@@ -13,6 +16,7 @@ class DatabaseConnection:
         """
         self.client = None
         self.database = None
+        logger.info("init start..")
     
     def connect(self) -> Database:
         """
@@ -22,10 +26,11 @@ class DatabaseConnection:
             Database: MongoDB database instance
         """
         try:
-            self.client = MongoClient(config.MONGODB_URI)
-            self.database = self.client[config.MONGODB_DATABASE]
+            self.client = MongoClient(config.MONGO_URI)
+            self.database = self.client[config.MONGO_DB]
             # Test the connection
             self.client.admin.command('ping')
+            logger.info(f"connection success to db {self.database}")
             return self.database
         except Exception as e:
             raise ConnectionError(f"Failed to connect to MongoDB: {e}")

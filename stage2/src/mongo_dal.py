@@ -1,20 +1,24 @@
-from pymongo import MongoClient
 from gridfs import GridFS
 import logging
 from .mongo_client import DatabaseConnection
-from ..config import MONGODB_COLLECTION
+from .. import config
 logger = logging.getLogger(__name__)
-
+logging.basicConfig(
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    level=logging.INFO
+)
 
 class MongoDal:
     """
     a class for push the audio files into mongo db
     """
-    def __init__(self):
+    def __init__(self,mongo_collection:str):
         self.db_connection = DatabaseConnection()
         self.database = self.db_connection.connect()
-        self.collection = self.database[MONGODB_COLLECTION]
+        self.collection = self.database[mongo_collection]
         self.fs = GridFS(database=self.database,collection=self.collection)
+        logger.info("connection created seccssesfuly")
 
 
     def push_to_mongo(self,file_path:str)-> str:
@@ -32,3 +36,6 @@ class MongoDal:
 
 
 
+if __name__ == "__main__":
+    dal = MongoDal(config.MONGODB_COLLECTION)
+    dal.push_to_mongo(config.FILES_PATH+"download (1).wav")
