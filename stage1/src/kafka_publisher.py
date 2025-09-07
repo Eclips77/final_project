@@ -1,17 +1,32 @@
 from kafka import KafkaProducer
 from bson import json_util
+from typing import List
+import logging
 
+logger = logging.getLogger(__name__)
 class KafkaPubSub:
     """Generic Kafka publisher and subscriber using kafka-python."""
 
     def __init__(self, bootstrap_servers: str) -> None:
         self.bootstrap_servers = bootstrap_servers
-        self.producer = KafkaProducer(bootstrap_servers=self.bootstrap_servers, value_serializer=lambda v: json_util.dumps(v).encode('utf-8'))
+        self._producer = KafkaProducer(bootstrap_servers=self.bootstrap_servers, value_serializer=lambda v: json_util.dumps(v).encode('utf-8'))
 
-    def publish(self, topic: str, message: str) -> None:
-        """Publish a message to a topic."""
-        self.producer.send(topic, message)
-        self.producer.flush()
+    def publish(self, topic: str, message: List[dict]):
+        """
+        Publish a message to a Kafka topic
+        
+        Args:
+            topic (str): Kafka topic name
+            message (dict): Message to send
+        """
+        try:
+            for m in message:
+                self._producer.send(topic, value=m)
+            self._producer.flush()
+            logger.info(f"Message published to topic '{topic}': {message}")
+        except Exception as e:
+            logger.error(f"Failed to publish message to topic '{topic}': {e}")
+            raise RuntimeError(f"Failed to publish message to topic '{topic}': {e}")
 
 
 # def main() -> None:
