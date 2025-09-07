@@ -9,9 +9,12 @@ class FileReader:
     def read_file_paths(directory:str)->list[str]:
         """
         a method that returns all the file pathes in a directory
+
         Args:
-            directory path : str.
+
+            directory path str.
         Returns:
+        
                 all the files pathes in the directory.
         """
         return [os.path.join(directory, file) for file in os.listdir(directory) if os.path.isfile(os.path.join(directory, file))]
