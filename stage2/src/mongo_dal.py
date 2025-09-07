@@ -30,17 +30,21 @@ class MongoDal:
         Returns:
                 the document id to improve success
         """
-        with open (file_path,'rb') as audio_file:
-            logger.info("read file...")
-            file_data = audio_file.read()
-            file_name_in_db = file_path.split('/')[-1] if '/' in file_path else file_path.split('\\')[-1]
-            file_id = self.fs.put(file_data, filename=file_name_in_db, content_type='application/wav')
-            logger.info("file push seccssess")
-            return file_id
+        try:
+            with open (file_path,'rb') as audio_file:
+                logger.info("read file...")
+                file_data = audio_file.read()
+                file_name_in_db = file_path.split('/')[-1] if '/' in file_path else file_path.split('\\')[-1]
+                file_id = self.fs.put(file_data, filename=file_name_in_db, content_type='application/wav')
+                logger.info("file push seccssess")
+                return file_id
+        except Exception as e:
+            logger.error(f"error push to mongo {e}")
+            raise
 
 
 
-if __name__ == "__main__":
-    dal = MongoDal(config.MONGODB_COLLECTION)
-    x = dal.push_to_mongo(config.FILES_PATH)
-    print(x)
+# if __name__ == "__main__":
+#     dal = MongoDal(config.MONGODB_COLLECTION)
+#     x = dal.push_to_mongo(config.FILES_PATH)
+#     print(x)

@@ -1,26 +1,41 @@
 from kafka import KafkaConsumer
-# from pymongo import MongoClient, ASCENDING, errors
-from datetime import datetime, timezone
-from .. import config
 import json
-class InterestingConsumerService:
-    def __init__(self) -> None:
-        self._consumer = KafkaConsumer(
-            config.KAFKA_TOPIC,
+import logging
+from .. import config 
+logger = logging.getLogger(__name__)
+logging.basicConfig(
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    level=logging.INFO
+)
+class Consumer:
+    def __init__(self, topic: str):
+        self.consumer = KafkaConsumer(
+            topic,
             bootstrap_servers=config.KAFKA_BOOTSTRAP,
-            value_deserializer=lambda m: json.loads(m.decode("utf-8")),
-            enable_auto_commit=False,
-            # auto_offset_reset=config.AUTO_OFFSET_RESET,
-            # session_timeout_ms=config.SESSION_TIMEOUT_MS,
+            value_deserializer=lambda m: json.loads(m.decode('utf-8')),
+            auto_offset_reset='earliest',
+            enable_auto_commit=True
         )
-  
+        logger.info(f"Kafka consumer initialized for topic: {topic}")
 
-    @property
-    def consumer(self) -> KafkaConsumer:
-        return self._consumer
+    def consume_messages(self):
+        """"
+        Consume messages from the Kafka topic
+        Yields:
+            message (Dict): The consumed message
+        """
+        try:
+            for message in self.consumer:
+                logger.info(f"Consumed message: {message.value}")
+                yield message.value
+        except Exception as e:
+            logger.error(f"Error consuming messages: {e}")
+            raise RuntimeError(f"Error consuming messages: {e}")
 
-    @property
-    def collection(self):
-        return self._coll
 
-   
+if __name__ == "__main__":
+    cons = Consumer("metadata").consumer
+    for s in cons.consume_messages():
+        print(s)
+    cons.close()
