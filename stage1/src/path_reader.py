@@ -33,7 +33,8 @@ class FileReader:
                 'size': file_stats.st_size,
                 'permissions': stat.filemode(file_stats.st_mode),
                 'create_date': datetime.datetime.fromtimestamp(file_stats.st_ctime),
-                "file_name":os.path.basename(file_path)
+                "file_name":os.path.basename(file_path),
+                'file_path':file_path
             }
         else:
             logger.error(f"error create metadata from {file_path}")
