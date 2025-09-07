@@ -22,7 +22,7 @@ class FileReader:
         a method to get metadata about file.
 
         Args:
-            filepath str.
+            file_path str.
         Return:
                 dict of the meta data about the file.
         """
