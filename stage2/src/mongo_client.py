@@ -1,10 +1,38 @@
 from pymongo import MongoClient
-from gridfs import GridFS
-import logging
+from pymongo.database import Database
+from .. import config
 
-logger = logging.getLogger(__name__)
-
-audio_file_path = 'path/to/your/audio.mp3'  # Replace with your audio file path
-with open(audio_file_path, 'rb') as audio_file:
-    file_id = fs.put(audio_file, filename='audio.mp3', content_type='audio/mpeg')
-    print(f"Audio file stored with ID: {file_id}")
+class DatabaseConnection:
+    """
+    MongoDB connection manager
+    """
+    
+    def __init__(self):
+        """
+        Initialize database connection
+        """
+        self.client = None
+        self.database = None
+    
+    def connect(self) -> Database:
+        """
+        Establish connection to MongoDB
+        
+        Returns:
+            Database: MongoDB database instance
+        """
+        try:
+            self.client = MongoClient(config.MONGODB_URI)
+            self.database = self.client[config.MONGODB_DATABASE]
+            # Test the connection
+            self.client.admin.command('ping')
+            return self.database
+        except Exception as e:
+            raise ConnectionError(f"Failed to connect to MongoDB: {e}")
+    
+    def disconnect(self):
+        """
+        Close database connection
+        """
+        if self.client:
+            self.client.close()
