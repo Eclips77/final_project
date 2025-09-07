@@ -16,12 +16,12 @@ class MongoDal:
     def __init__(self,mongo_collection:str):
         self.db_connection = DatabaseConnection()
         self.database = self.db_connection.connect()
-        self.collection = self.database[mongo_collection]
+        self.collection = mongo_collection
         self.fs = GridFS(database=self.database,collection=self.collection)
         logger.info("connection created seccssesfuly")
 
 
-    def push_to_mongo(self,file_path:str)-> str:
+    def push_to_mongo(self,file_path:str):
         """
         Push an audio file into the db
 
@@ -31,11 +31,16 @@ class MongoDal:
                 the document id to improve success
         """
         with open (file_path,'rb') as audio_file:
-            file_id = self.fs.put(audio_file,filename=audio_file, content_type='audio/mpeg')
+            logger.info("read file...")
+            file_data = audio_file.read()
+            file_name_in_db = file_path.split('/')[-1] if '/' in file_path else file_path.split('\\')[-1]
+            file_id = self.fs.put(file_data, filename=file_name_in_db, content_type='application/wav')
+            logger.info("file push seccssess")
             return file_id
 
 
 
 if __name__ == "__main__":
     dal = MongoDal(config.MONGODB_COLLECTION)
-    dal.push_to_mongo(config.FILES_PATH+"download (1).wav")
+    x = dal.push_to_mongo(config.FILES_PATH)
+    print(x)
