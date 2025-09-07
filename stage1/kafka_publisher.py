@@ -14,9 +14,9 @@ class KafkaPubSub:
         self.producer.flush()
 
 
-def main() -> None:
-    k = KafkaPubSub()
-    print("KafkaPubSub initialized. Use publish/consume_iter with a running Kafka.")
+# def main() -> None:
+#     k = KafkaPubSub()
+#     k.publish()
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
