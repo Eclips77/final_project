@@ -1,27 +1,35 @@
 version: '3.8'
-
 services:
-  
-
-
-  zookeeper:
-    image: 'bitnami/zookeeper:3.8'
-    container_name: zookeeper
-    ports:
-      - '2181:2181'
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.0 
+    container_name: elasticsearch
     environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-
-  kafka:
-    image: 'bitnami/kafka:3.7'
-    container_name: kafka
+      - xpack.security.enabled=false 
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
     ports:
-      - '9092:9092'
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data 
+    networks:
+      - elastic-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.14.0 
+    container_name: kibana
     environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - ALLOW_PLAINTEXT_LISTENER=yes
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
     depends_on:
-      - zookeeper
+      - elasticsearch
+    networks:
+      - elastic-network
+
+volumes:
+  esdata: 
+
+networks:
+  elastic-network: 
+    driver: bridge

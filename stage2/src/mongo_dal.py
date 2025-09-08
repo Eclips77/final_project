@@ -1,8 +1,8 @@
-import logging
 from pymongo import MongoClient
 import gridfs
+from ..util.logger import Logger
 
-logger = logging.getLogger(__name__)
+logger = Logger.get_logger()
 
 class MongoStore:
     """
