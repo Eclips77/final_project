@@ -2,7 +2,8 @@ from ..src.consumer import Consumer
 from ..src.id_factory import IdFctory
 from .. import config
 from ..src.mongo_dal import MongoStore
-
+from ..src.elastic_client import EsIndexer
+import os
 import logging
 
 logging.basicConfig(
@@ -26,4 +27,24 @@ class Stage2Manager:
         self.id_factroy = IdFctory()
         self.consumer = Consumer(config.KAFKA_TOPIC,config.KAFKA_BOOTSTRAP,True)
         self.mongo = MongoStore(mongo_uri=mogo_uri, db_name=mongo_db)
-        self.es = 
+        self.es = EsIndexer(es_host,es_index)
+
+    
+    def process_kafka_metadata(self) -> None:
+        for meta in self.consumer:
+            doc = dict(meta) 
+            doc_id = doc.get("id") or doc.get("file_hash") or self.ids.new_uuid()
+            doc["id"] = doc_id
+            self.es.index_many([doc])
+            self.consumer.commit()
+
+    def ingest_local_file(self, file_path: str, basic_meta, prefer_hash: bool = True) -> str:
+        file_id = self.ids.from_file(file_path) if prefer_hash else self.ids.new_uuid()
+        filename = os.path.basename(file_path)
+        aux = {"filename": filename}
+        if basic_meta:
+            aux.update(basic_meta)
+        self.mongo.save_file(file_id=file_id, file_path=file_path, metadata=aux)
+        doc = {"id": file_id, **aux}
+        self.es.index_many([doc])
+        return file_id
