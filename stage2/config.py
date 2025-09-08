@@ -14,3 +14,5 @@ MONGODB_COLLECTION : str = os.getenv("MONGODB_COLLECTION","podcasts")
 KAFKA_TOPIC : str = os.getenv("KAFKA_TOPIC","metadata")
 # a variable to get the server bootstrap
 KAFKA_BOOTSTRAP: str = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092").split(",")
+# a variable to get the elastic connection info
+ES_HOST: str = os.getenv("ES_INDEX","http://localhost:9200")

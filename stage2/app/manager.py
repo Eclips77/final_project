@@ -18,11 +18,12 @@ class Stage2Manager:
     a manager class for managing the stage2 workflow.
     """
     def __init__(self,
-                 mongo_db: str,
-                 mogo_uri: str,
-                 es_host: str,
-                 es_index: str
+                 mongo_db: str = config.MONGO_DB,
+                 mogo_uri: str = config.MONGO_URI,
+                 es_host: str = config.ES_HOST,
+                 es_index: str = config.ES_INDEX
                  ):
         self.id_factroy = IdFctory()
         self.consumer = Consumer(config.KAFKA_TOPIC,config.KAFKA_BOOTSTRAP,True)
-        self.mongo = MongoStore(mongo_uri=mongo_uri, db_name=mongo_db)
+        self.mongo = MongoStore(mongo_uri=mogo_uri, db_name=mongo_db)
+        self.es = 
