@@ -1,7 +1,3 @@
-import os, json
-from datetime import datetime
-from pathlib import Path
-from kafka import KafkaConsumer, KafkaProducer
 from faster_whisper import WhisperModel
 
 def transcribe(audio_path: str) -> list:
