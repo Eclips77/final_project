@@ -29,15 +29,6 @@ ES_MAPPING = {
       "id": { 
         "type": "text"
       },
-      "create_date": { 
-        "type": "date",
-        "format": "yyyy-MM-dd HH:mm:ssXXX||strict_date_optional_time||epoch_millis",
-        "ignore_malformed": True,
-        "null_value": None
-      },
-      "file_path": { 
-        "type": "keyword" 
-      },
       "size": {
         "type": "text",
         "fields": {
@@ -49,9 +40,18 @@ ES_MAPPING = {
       },
       "permissions": { 
         "type": "keyword" 
+      },
+      "create_date": { 
+        "type": "date",
+        "format": "yyyy-MM-dd HH:mm:ssXXX||strict_date_optional_time||epoch_millis",
+        "ignore_malformed": True,
+        "null_value": None
       }, 
       "file_name": { 
         "type": "keyword"
+      },
+      "file_path": { 
+        "type": "keyword" 
       }
     }
   }
