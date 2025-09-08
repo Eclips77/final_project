@@ -1,7 +1,7 @@
 from ..src.consumer import Consumer
 from ..src.id_factory import IdFctory
 from .. import config
-# from ..src import 
+from ..src.mongo_dal import MongoStore
 
 import logging
 
@@ -25,4 +25,4 @@ class Stage2Manager:
                  ):
         self.id_factroy = IdFctory()
         self.consumer = Consumer(config.KAFKA_TOPIC,config.KAFKA_BOOTSTRAP,True)
-        
+        self.mongo = MongoStore(mongo_uri=mongo_uri, db_name=mongo_db)
