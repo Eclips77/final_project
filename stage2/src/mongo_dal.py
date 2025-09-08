@@ -1,50 +1,42 @@
-from gridfs import GridFS
 import logging
-from .mongo_client import DatabaseConnection
-from .. import config
+from pymongo import MongoClient
+import gridfs
+
 logger = logging.getLogger(__name__)
-logging.basicConfig(
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    level=logging.INFO
-)
 
-class MongoDal:
+class MongoStore:
     """
-    a class for push the audio files into mongo db
+    Stores audio files in MongoDB using GridFS.
     """
-    def __init__(self,mongo_collection:str):
-        self.db_connection = DatabaseConnection()
-        self.database = self.db_connection.connect()
-        self.collection = mongo_collection
-        self.fs = GridFS(database=self.database,collection=self.collection)
-        logger.info("connection created seccssesfuly")
 
+    def __init__(self, mongo_uri: str, db_name: str):
+        self.client = MongoClient(mongo_uri)
+        self.db = self.client[db_name]
+        self.fs = gridfs.GridFS(self.db)
 
-    def push_to_mongo(self,file_path:str):
+    def exists(self, file_id: str) -> bool:
+        """Return True if a file with the given ID exists in GridFS."""
+        return self.db.fs.files.find_one({"_id": file_id}) is not None
+
+    def save_file(self, file_id: str, file_path: str) -> str:
         """
-        Push an audio file into the db
+        save a file into the db.
 
         Args:
-            file_path str.
-        Returns:
-                the document id to improve success
+            file_id , file_path .
+        
+        Return:
+                the file id
         """
-        try:
-            with open (file_path,'rb') as audio_file:
-                logger.info("read file...")
-                file_data = audio_file.read()
-                file_name_in_db = file_path.split('/')[-1] if '/' in file_path else file_path.split('\\')[-1]
-                file_id = self.fs.put(file_data, filename=file_name_in_db, content_type='application/wav')
-                logger.info("file push seccssess")
-                return file_id
-        except Exception as e:
-            logger.error(f"error push to mongo {e}")
-            raise
+        if self.exists(file_id):
+            logger.info(f"file id alredy exsist {file_id}")
+            return file_id  
+        with open(file_path, "rb") as f:
+            self.fs.put(f, _id=file_id, filename=file_path,)
+            logger.info(f"file stored successfully")
+        return file_id
 
-
-
-# if __name__ == "__main__":
-#     dal = MongoDal(config.MONGODB_COLLECTION)
-#     x = dal.push_to_mongo(config.FILES_PATH)
-#     print(x)
+    def get_file(self, file_id: str) -> bytes:
+        """Retrieve a file's raw bytes by ID."""
+        file_obj = self.fs.get(file_id)
+        return file_obj.read()
