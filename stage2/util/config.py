@@ -10,7 +10,7 @@ MONGO_URI : str = os.getenv("MONGO_URI","mongodb://localhost:27017")
 # a variable to get the mongo database name
 MONGO_DB : str = os.getenv("MONGO_DB","audioDB")
 # a variable to get the elastic index
-ES_INDEX : str = os.getenv("ES_INDEX","audioMetaData")
+ES_INDEX : str = os.getenv("ES_INDEX","audio_meta_data")
 # a variable to get the db collection
 MONGODB_COLLECTION : str = os.getenv("MONGODB_COLLECTION","podcasts")
 # a variable to get the kafka topic
