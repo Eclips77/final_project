@@ -1,8 +1,8 @@
 from typing import Dict, List
 from elasticsearch import Elasticsearch, helpers
-import logging
+from ..util.logger import Logger
 
-logger = logging.getLogger(__name__)
+logger = Logger.get_logger()
 
 class EsIndexer:
     """Indexes metadata dictionaries into Elasticsearch under stable IDs."""

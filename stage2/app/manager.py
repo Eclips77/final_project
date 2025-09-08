@@ -4,15 +4,9 @@ from ..util import config
 from ..src.mongo_dal import MongoStore
 from ..src.elastic_client import EsIndexer
 import os
-import logging
+from ..util.logger import Logger
 
-
-logging.basicConfig(
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    level=logging.INFO
-)
-logger = logging.getLogger(__name__)
+logger = Logger.get_logger()
 
 
 class Stage2Manager:

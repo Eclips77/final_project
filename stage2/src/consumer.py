@@ -1,15 +1,10 @@
 from typing import Dict, Iterator
 from bson import json_util
 from kafka import KafkaConsumer
-import logging
 from ..util import config
+from ..util.logger import Logger
 
-logging.basicConfig(
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    level=logging.INFO
-)
-logger = logging.getLogger(__name__)
+logger = Logger.get_logger()
 
 class Consumer:
     """
