@@ -1,5 +1,4 @@
 import os
-from typing import List
 
 # a variable to get the audio files path
 FILES_PATH : str = os.getenv("FILES_PATH","C:/Users/brdwn/Desktop/my_projects/final_proj_data/download (2).wav") # temporary! remember to change it.
@@ -14,4 +13,4 @@ MONGODB_COLLECTION : str = os.getenv("MONGODB_COLLECTION","podcasts")
 # a variable to get the kafka topic
 KAFKA_TOPIC : str = os.getenv("KAFKA_TOPIC","metadata")
 # a variable to get the server bootstrap
-KAFKA_BOOTSTRAP: List[str] = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092").split(",")
+KAFKA_BOOTSTRAP: str = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092").split(",")

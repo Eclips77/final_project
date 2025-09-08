@@ -12,13 +12,11 @@ class Consumer:
         self,
         topic: str,
         bootstrap_servers: str,
-        group_id: str,
-        enable_auto_commit: bool = False,
-    ) -> None:
+        enable_auto_commit: bool = False,):
+    
         self._consumer = KafkaConsumer(
             topic,
             bootstrap_servers=bootstrap_servers,
-            group_id=group_id,
             enable_auto_commit=enable_auto_commit,
             value_deserializer=lambda v: json.loads(v.decode("utf-8")),
         )
