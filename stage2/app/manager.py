@@ -17,12 +17,13 @@ class Stage2Manager:
                  mongo_db: str = config.MONGO_DB,
                  mongo_uri: str = config.MONGO_URI,
                  es_host: str = config.ES_HOST,
-                 es_index: str = config.ES_INDEX
+                 es_index: str = config.ES_INDEX,
+                 es_mapping: dict = config.ES_MAPPING
                  ):
         self.id_factory = IdFctory()
         self.consumer = Consumer(config.KAFKA_TOPIC, config.KAFKA_BOOTSTRAP)
         self.mongo = MongoStore(mongo_uri=mongo_uri, db_name=mongo_db)
-        self.es = EsIndexer(es_host, es_index)
+        self.es = EsIndexer(es_host, es_index,es_mapping)
 
 
     def manage_mongo(self,files_pathes:list[str]):

@@ -7,9 +7,11 @@ logger = Logger.get_logger()
 class EsIndexer:
     """Indexes metadata dictionaries into Elasticsearch under stable IDs."""
 
-    def __init__(self, host: str , index_name: str):
+    def __init__(self, host: str , index_name: str,mapping:dict):
         self.es = Elasticsearch(hosts=[host])
         self.index = index_name
+        self.mapping = mapping
+
         self.ensure_index()
 
     def ensure_index(self):
