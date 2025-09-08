@@ -1,41 +1,37 @@
-from kafka import KafkaConsumer
+from typing import Dict, Iterator
 import json
-import logging
-from .. import config 
-logger = logging.getLogger(__name__)
-logging.basicConfig(
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    level=logging.INFO
-)
+from kafka import KafkaConsumer
+
+
 class Consumer:
-    def __init__(self, topic: str):
-        self.consumer = KafkaConsumer(
+    """
+    consumer class 
+    """
+
+    def __init__(
+        self,
+        topic: str,
+        bootstrap_servers: str,
+        group_id: str,
+        enable_auto_commit: bool = False,
+    ) -> None:
+        self._consumer = KafkaConsumer(
             topic,
-            bootstrap_servers=config.KAFKA_BOOTSTRAP,
-            value_deserializer=lambda m: json.loads(m.decode('utf-8')),
-            auto_offset_reset='earliest',
-            enable_auto_commit=True
+            bootstrap_servers=bootstrap_servers,
+            group_id=group_id,
+            enable_auto_commit=enable_auto_commit,
+            value_deserializer=lambda v: json.loads(v.decode("utf-8")),
         )
-        logger.info(f"Kafka consumer initialized for topic: {topic}")
 
-    def consume_messages(self):
-        """"
-        Consume messages from the Kafka topic
-        Yields:
-            message (Dict): The consumed message
-        """
-        try:
-            for message in self.consumer:
-                logger.info(f"Consumed message: {message.value}")
-                yield message.value
-        except Exception as e:
-            logger.error(f"Error consuming messages: {e}")
-            raise RuntimeError(f"Error consuming messages: {e}")
+    def __iter__(self) -> Iterator[Dict]:
+        """Iterate over incoming messages as dictionaries."""
+        for msg in self._consumer:
+            yield msg.value
 
+    def commit(self) -> None:
+        """Commit the current offset explicitly."""
+        self._consumer.commit()
 
-if __name__ == "__main__":
-    cons = Consumer("metadata").consumer
-    for s in cons.consume_messages():
-        print(s)
-    cons.close()
+    def close(self) -> None:
+        """Close the consumer."""
+        self._consumer.close()
