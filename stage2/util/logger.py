@@ -1,12 +1,13 @@
 import logging
 from elasticsearch import Elasticsearch
 from datetime import datetime
+from . import config
 
 class Logger:
     _logger = None
     @classmethod
-    def get_logger(cls, name="your_logger_name", es_host="your_es_host_name",
-        index="your_index_logs_name", level=logging.DEBUG):
+    def get_logger(cls, name="logger", es_host=config.ES_HOST,
+        index="logging_index", level=logging.INFO):
         if cls._logger:
             return cls._logger
         logger = logging.getLogger(name)
@@ -30,5 +31,5 @@ class Logger:
                     logger.addHandler(ESHandler())
                     logger.addHandler(logging.StreamHandler())
 
-                cls._logger = logger
-                return logger
+        cls._logger = logger
+        return logger

@@ -75,11 +75,6 @@ class Stage2Manager:
         x = self.manage_elastic()
         return x
 
-
-
-
-
-
 if __name__ == "__main__":
     manager = Stage2Manager()
     manager.main()
