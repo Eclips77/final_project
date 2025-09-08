@@ -1,7 +1,6 @@
 from typing import Dict, Iterator
 from bson import json_util
 from kafka import KafkaConsumer
-from ..util import config
 from ..util.logger import Logger
 
 logger = Logger.get_logger()
@@ -14,8 +13,8 @@ class Consumer:
     def __init__(
         self,
         topic: str,
-        bootstrap_servers: str,
-        group_id: str = None,
+        bootstrap_servers: list[str],
+        group_id: str,
         enable_auto_commit: bool = False,):
 
         self._consumer = KafkaConsumer(

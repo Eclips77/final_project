@@ -1,5 +1,5 @@
 import speech_recognition as sr
-from ..utils import config
+from ..util import config
 # import os
 import logging
 

@@ -21,7 +21,7 @@ class Stage2Manager:
                  es_mapping: dict = config.ES_MAPPING
                  ):
         self.id_factory = IdFctory()
-        self.consumer = Consumer(config.KAFKA_TOPIC, config.KAFKA_BOOTSTRAP)
+        self.consumer = Consumer(config.KAFKA_TOPIC, config.KAFKA_BOOTSTRAP,config.KAFKA_CONSUMER_GROUP)
         self.mongo = MongoStore(mongo_uri=mongo_uri, db_name=mongo_db)
         self.es = EsIndexer(es_host, es_index,es_mapping)
 
