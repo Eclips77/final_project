@@ -1,35 +1,68 @@
 from typing import Dict, Iterator
-import json
+from bson import json_util
 from kafka import KafkaConsumer
+import logging
+from ..util import config
 
+logging.basicConfig(
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    level=logging.INFO
+)
+logger = logging.getLogger(__name__)
 
 class Consumer:
     """
-    consumer class 
+    consumer class for Kafka metadata consumption
     """
 
     def __init__(
         self,
         topic: str,
         bootstrap_servers: str,
+        group_id: str = None,
         enable_auto_commit: bool = False,):
-    
+
         self._consumer = KafkaConsumer(
             topic,
             bootstrap_servers=bootstrap_servers,
+            group_id=group_id,
             enable_auto_commit=enable_auto_commit,
-            value_deserializer=lambda v: json.loads(v.decode("utf-8")),
+            auto_offset_reset='earliest',
+            value_deserializer=lambda v: json_util.loads(v.decode("utf-8")),
         )
+        logger.info(f"Kafka consumer initialized for topic: {topic}, group: {group_id}")
 
     def __iter__(self) -> Iterator[Dict]:
         """Iterate over incoming messages as dictionaries."""
-        for msg in self._consumer:
-            yield msg.value
+        try:
+            for msg in self._consumer:
+                logger.debug(f"Received message from partition {msg.partition}, offset {msg.offset}")
+                yield msg.value
+        except Exception as e:
+            logger.error(f"Error consuming message: {e}")
+            raise
 
     def commit(self) -> None:
         """Commit the current offset explicitly."""
-        self._consumer.commit()
+        try:
+            self._consumer.commit()
+            logger.debug("Offset committed successfully")
+        except Exception as e:
+            logger.error(f"Error committing offset: {e}")
+            raise
 
     def close(self) -> None:
         """Close the consumer."""
-        self._consumer.close()
+        try:
+            self._consumer.close()
+            logger.info("Kafka consumer closed successfully")
+        except Exception as e:
+            logger.error(f"Error closing consumer: {e}")
+            raise
+
+
+if __name__ == "__main__":
+    consumer = Consumer(config.KAFKA_TOPIC,config.KAFKA_BOOTSTRAP)
+    for msg in consumer:
+        print(msg)
