@@ -1,24 +1,36 @@
-from elasticsearch import Elasticsearch
+from typing import Dict, List
+from elasticsearch import Elasticsearch, helpers
 import logging
-from .. import config
 
 logger = logging.getLogger(__name__)
 
-class ESClient:
-    """"
-    Elasticsearch client for connecting to the Elasticsearch cluster."""
-    def __init__(self):
-        self.es = Elasticsearch(
-            hosts=[config.ES_HOST],
-            request_timeout=30
-            # http_auth=(config.ES_USER, config.ES_PASSWORD)
-        )
-        if not self.es.ping():
-            logger.error("Elasticsearch cluster is down!")
-            raise ConnectionError("Elasticsearch cluster is down!")
-        else:
-            logger.info("Connected to Elasticsearch cluster")
-        
-    
+class EsIndexer:
+    """Indexes metadata dictionaries into Elasticsearch under stable IDs."""
 
+    def __init__(self, host: str , index_name: str):
+        self.es = Elasticsearch(hosts=[host])
+        self.index = index_name
+        self.ensure_index()
 
+    def ensure_index(self):
+        """Create the index if it does not exist."""
+        if not self.es.indices.exists(index=self.index):
+            self.es.indices.create(index=self.index, ignore=400)
+            logger.info(f"index {self.index} create successfully.")
+
+    def index_many(self, docs: List[Dict]):
+        actions = []
+        for d in docs:
+            doc_id = d.get("_id")
+            if not doc_id:
+                logger.error("Each document must include an '_id' field.")
+                raise ValueError("Each document must include an '_id' field.")
+            actions.append({
+                "_op_type": "index",
+                "_index": self.index,
+                "_id": doc_id,
+                "_source": d,
+            })
+        if actions:
+            helpers.bulk(self.es, actions)
+            logger.info("docs indexed successfully.")

@@ -48,3 +48,26 @@ class Stage2Manager:
         doc = {"id": file_id, **aux}
         self.es.index_many([doc])
         return file_id
+    
+
+
+    @staticmethod
+    def read_file_paths(directory:str)->list[str]:
+        """
+        a method that returns all the file pathes in a directory
+
+        Args:
+
+            directory path str.
+        Returns:
+        
+                all the files pathes in the directory.
+        """
+        return [os.path.join(directory, file) for file in os.listdir(directory) if os.path.isfile(os.path.join(directory, file))]
+
+
+if __name__ == "__main__":
+    manager = Stage2Manager()
+    x = manager.read_file_paths(config.FILES_PATH)
+    for z in x:
+        print(z)
