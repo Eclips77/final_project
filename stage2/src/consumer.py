@@ -57,7 +57,7 @@ class Consumer:
             raise
 
 
-if __name__ == "__main__":
-    consumer = Consumer(config.KAFKA_TOPIC,config.KAFKA_BOOTSTRAP)
-    for msg in consumer:
-        print(msg)
+# if __name__ == "__main__":
+#     consumer = Consumer(config.KAFKA_TOPIC,config.KAFKA_BOOTSTRAP)
+#     for msg in consumer:
+#         print(msg.value)
