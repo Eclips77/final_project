@@ -1,8 +1,8 @@
 from ..src.consumer import Consumer
 from ..src.id_factory import IdFctory
 from ..util import config
-from src.mongo_dal import MongoStore
-from src.elastic_client import EsIndexer
+from ..src.mongo_dal import MongoStore
+from ..src.elastic_client import EsIndexer
 import os
 import logging
 
