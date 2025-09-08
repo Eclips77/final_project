@@ -15,7 +15,7 @@ class EsIndexer:
     def ensure_index(self):
         """Create the index if it does not exist."""
         if not self.es.indices.exists(index=self.index):
-            self.es.indices.create(index=self.index, ignore=400)
+            self.es.indices.create(index=self.index, body=self.mapping)
             logger.info(f"index {self.index} create successfully.")
 
     def index_many(self, docs: List[Dict]):

@@ -23,9 +23,40 @@ KAFKA_CONSUMER_GROUP: str = os.getenv("KAFKA_CONSUMER_GROUP", "metadata_group")
 ES_HOST: str = os.getenv("ES_HOST","http://localhost:9200")
 
 
-ES_MAPPING : dict = {
-
+ES_MAPPING = {
+  "mappings": {
+    "properties": {
+      "id": { 
+        "type": "text"
+      },
+      "create_date": { 
+        "type": "date",
+        "format": "yyyy-MM-dd HH:mm:ssXXX||strict_date_optional_time||epoch_millis",
+        "ignore_malformed": True,
+        "null_value": None
+      },
+      "file_path": { 
+        "type": "keyword" 
+      },
+      "size": {
+        "type": "text",
+        "fields": {
+          "raw": { 
+            "type": "keyword", 
+            "ignore_above": 32766 
+          }
+        }
+      },
+      "permissions": { 
+        "type": "keyword" 
+      }, 
+      "file_name": { 
+        "type": "keyword"
+      }
+    }
+  }
 }
+
 
 
 

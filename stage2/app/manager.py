@@ -44,7 +44,6 @@ class Stage2Manager:
         """
         docs = []
         try:
-            self.es.ensure_index()
             for doc in self.consumer:
                 doc["id"] = self.id_factory.create_hash(doc["file_path"])
                 docs.append(doc)
