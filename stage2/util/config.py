@@ -27,7 +27,7 @@ ES_HOST: str = os.getenv("ES_HOST","http://localhost:9200")
 ES_MAPPING = {
   "mappings": {
     "properties": {
-      "id": { 
+      "_id": { 
         "type": "keyword"
       },
       "size": {

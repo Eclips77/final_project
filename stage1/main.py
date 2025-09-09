@@ -1,6 +1,6 @@
 from . import config
 from .src.kafka_publisher import KafkaPubSub
-from .src.path_reader import FileReader
+from .src.path_reader import PathExtractor
 import logging
 
 logging.basicConfig(
@@ -22,10 +22,10 @@ class Stage1Manager:
     
     def main(self):
         try:
-            self.data = FileReader.read_file_paths(config.DATA_DIR_PATH)
+            self.data = PathExtractor.read_file_paths(config.DATA_DIR_PATH)
             logger.info("files pathes loaded!.")
             for meta in self.data:
-                data_to_pub = FileReader.get_metadata(meta)
+                data_to_pub = PathExtractor.get_metadata(meta)
                 self.publisher.publish(config.TOPIC,data_to_pub)
             logger.info(f"Published data into topic {config.TOPIC}")
 
