@@ -39,18 +39,14 @@ class Stage2Manager:
             logger.error(f"Error indexing to mongo {e}")
             raise
 
-    def manage_elastic(self)-> list[dict]:
+    def manage_elastic(self):
         """
         manage indexing metadata into elastic.
         """
-        docs = []
         try:
             for doc in self.consumer:
-                docs.append(doc)
-            success = self.es.index_many(docs)
-            if success:
+                self.es.index_doc(doc)
                 logger.info(f"metadata indexed successfully")
-            return docs
         except Exception as e:
             logger.error(f"Error indexing into elastic {e}")
             raise
@@ -73,8 +69,8 @@ class Stage2Manager:
     def main(self):
         pathes = self.read_file_paths(config.FILES_PATH)
         self.manage_mongo(pathes)
-        x = self.manage_elastic()
-        return x
+        self.manage_elastic()
+
 
 if __name__ == "__main__":
     manager = Stage2Manager()

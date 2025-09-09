@@ -20,10 +20,11 @@ class EsIndexer:
             self.es.indices.create(index=self.index, body=self.mapping)
             logger.info(f"index {self.index} create successfully.")
 
-    def index_many(self, docs):
-        actions = [
-            {"_op_type": "index", "_index": self.index, "_source": d}
-            for d in docs
-        ]
-        success, _ = helpers.bulk(self.es, actions,refresh=True,stats_only=True)
-        return success
+    def index_doc(self, document):
+        try:
+            response = self.es.index(index=self.index,document=document)
+            logger.info(f"doc {document} indexed.")
+            return response
+        except Exception as e:
+            logger.error(f"Error indexing document: {e}")
+            return None
