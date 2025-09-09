@@ -47,8 +47,9 @@ class Stage2Manager:
         try:
             for doc in self.consumer:
                 docs.append(doc)
-            self.es.index_many(docs)
-            logger.info(f"metadata indexed successfully")
+            success = self.es.index_many(docs)
+            if success:
+                logger.info(f"metadata indexed successfully")
             return docs
         except Exception as e:
             logger.error(f"Error indexing into elastic {e}")

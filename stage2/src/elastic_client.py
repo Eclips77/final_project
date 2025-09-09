@@ -20,9 +20,9 @@ class EsIndexer:
             self.es.indices.create(index=self.index, body=self.mapping)
             logger.info(f"index {self.index} create successfully.")
 
-    def index_docs(self,index_name, docs):
+    def index_many(self, docs):
         actions = [
-            {"_op_type": "index", "_index": index_name, "_id": d["_id"], "_source": d}
+            {"_op_type": "index", "_index": self.index, "_id": d["_id"], "_source": d}
             for d in docs
         ]
         success, _ = helpers.bulk(self.es, actions, stats_only=True)
