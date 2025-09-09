@@ -62,6 +62,13 @@ class FileMetadataService:
         """
         return [self.get_metadata(f) for f in self.list_files()]
 
+    def retrive_all_ids(self)-> List[str]:
+        ids = []
+        paths = self.list_files()
+        for path in paths:
+            ids.append(self._create_hash_id(path))
+        return ids
+
 
 # if __name__ == "__main__":
 #     drt = FileMetadataService("C:/Users/brdwn/Desktop/my_projects/final_proj_data")

@@ -2,7 +2,7 @@ from elasticsearch import Elasticsearch
 from ....tools.logger import Logger
 logger = Logger.get_logger()
 
-class ElasticsearchUpdater:
+class ElasticUpdater:
     def __init__(self, host:str,es_index: str):
 
         self.es = Elasticsearch(hosts=[host])
