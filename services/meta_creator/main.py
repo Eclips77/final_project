@@ -1,7 +1,7 @@
-from ..tools import config
+from ...tools import config
 from .src.kafka_publisher import KafkaPubSub
-from ..tools.path_reader import PathExtractor
-from ..tools.logger import Logger
+from ...tools.path_reader import PathExtractor
+from ...tools.logger import Logger
 
 logger = Logger.get_logger()
 
