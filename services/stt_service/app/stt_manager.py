@@ -6,7 +6,7 @@ from ..src.converter import AudioProcessor
 from ..src.es_updater import ElasticUpdater
 from ....tools.meta_data_creator import FileMetadataService
 
-class ASRPipeline:
+class TtsManager:
     """
     Pulls WAV from GridFS -> transcribes with Faster-Whisper -> updates transcript in Elasticsearch.
     """
