@@ -8,7 +8,7 @@ from ....tools.meta_data_creator import FileMetadataService
 
 class ASRPipeline:
     """
-    Pulls WAV from GridFS → transcribes with Faster-Whisper → updates transcript in Elasticsearch.
+    Pulls WAV from GridFS -> transcribes with Faster-Whisper -> updates transcript in Elasticsearch.
     """
     def __init__(self) -> None:
         self.fetcher = GridFSToTempWav(config.MONGO_URI,config.MONGO_DB)
