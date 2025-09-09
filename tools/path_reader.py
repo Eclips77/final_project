@@ -1,8 +1,8 @@
 import os
 import stat
-import logging
 import datetime
-logger = logging.getLogger(__name__)
+from .logger import Logger
+logger = Logger.get_logger()
 
 class PathExtractor:
     @staticmethod
