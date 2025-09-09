@@ -47,7 +47,7 @@ class FileMetadataService:
         """
         stats = os.stat(path)
         return {
-            "_id": self._create_hash_id(path),
+            "id": self._create_hash_id(path),
             "file_path": path,
             "size": stats.st_size,
             "create_date": datetime.date.fromtimestamp(stats.st_ctime,).isoformat(),

@@ -25,5 +25,5 @@ class EsIndexer:
             {"_op_type": "index", "_index": self.index, "_source": d}
             for d in docs
         ]
-        success, _ = helpers.bulk(self.es, actions,,stats_only=True)
+        success, _ = helpers.bulk(self.es, actions,refresh=True,stats_only=True)
         return success
