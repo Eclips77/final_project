@@ -1,10 +1,10 @@
 import os
 import stat
-import logging
 import datetime
-logger = logging.getLogger(__name__)
+from .logger import Logger
+logger = Logger.get_logger()
 
-class FileReader:
+class PathExtractor:
     @staticmethod
     def read_file_paths(directory:str)->list[str]:
         """
@@ -33,15 +33,20 @@ class FileReader:
             file_stats = os.stat(file_path)
             logger.info(f"file exist in {file_path}")
             return {
+                '_id': PathExtractor._create_hash(file_path),
                 'size': file_stats.st_size,
                 'permissions': stat.filemode(file_stats.st_mode),
-                'create_date': datetime.datetime.fromtimestamp(file_stats.st_ctime),
+                'create_date': datetime.date.fromtimestamp(file_stats.st_ctime),
                 "file_name":os.path.basename(file_path),
                 'file_path':file_path
             }
         else:
             logger.error(f"error create metadata from {file_path}")
             return {}
+    
+    @staticmethod
+    def _create_hash(name:str):
+        return hash(name)
 
 
 

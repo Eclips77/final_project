@@ -1,9 +1,8 @@
 from kafka import KafkaProducer
 from bson import json_util
 from typing import List
-import logging
-
-logger = logging.getLogger(__name__)
+from ...tools.logger import Logger
+logger = Logger.get_logger()
 class KafkaPubSub:
     """Generic Kafka publisher and subscriber using kafka-python."""
 
@@ -25,8 +24,7 @@ class KafkaPubSub:
             message (dict): Message to send
         """
         try:
-            for m in message:
-                self._producer.send(topic, value=m)
+            self._producer.send(topic, value=message)
             self._producer.flush()
             logger.info(f"Message published to topic '{topic}': {message}")
         except Exception as e:
