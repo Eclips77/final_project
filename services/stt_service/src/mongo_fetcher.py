@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict,List
 from pymongo import MongoClient
 import gridfs
 import tempfile
@@ -40,6 +40,13 @@ class GridFSToTempWav:
         except Exception as e:
             logger.error(f"error reriving chunk {e}")
             raise
+    
+    def write_many(self,files_id: List[str])-> List[Dict]:
+        temp_files_data = []
+        for file_id in files_id:
+            temp_files_data.append(self.write_one(file_id))
+        return temp_files_data
+
 
 # if __name__ == "__main__":
 #     g = GridFSToTempWav(config.MONGO_URI,config.MONGO_DB)
