@@ -1,5 +1,5 @@
 from faster_whisper import WhisperModel
-from ...tools.logger import Logger
+from ....tools.logger import Logger
 logger = Logger.get_logger()
 
 
