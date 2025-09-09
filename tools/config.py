@@ -51,6 +51,9 @@ ES_MAPPING = {
       },
       "file_path": { 
         "type": "keyword" 
+      },
+      "tts_data":{
+          "type":"text"
       }
     }
   }
