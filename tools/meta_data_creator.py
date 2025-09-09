@@ -7,7 +7,7 @@ logger = Logger.get_logger()
 from typing import List, Dict, Any
 
 class FileMetadataService:
-    def _init_(self, directory: str):
+    def __init__(self, directory: str):
         self.directory = directory
 
     def list_files(self) -> List[str]:

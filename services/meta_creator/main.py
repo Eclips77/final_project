@@ -1,6 +1,6 @@
 from ...tools import config
 from .src.kafka_publisher import KafkaPubSub
-from ...tools.path_reader import PathExtractor
+from ...tools.meta_data_creator import FileMetadataService
 from ...tools.logger import Logger
 
 logger = Logger.get_logger()
@@ -13,17 +13,17 @@ class Stage1Manager:
     def __init__(self):
         self.publisher = KafkaPubSub(config.KAFKA_BOOTSTRAP)
         self.topic = config.KAFKA_TOPIC
+        self.data_creator = FileMetadataService(config.DATA_DIR)
         self.data = None
     
     def main(self):
         try:
-            self.data = PathExtractor.read_file_paths(config.FILES_PATH)
+            self.data = self.data_creator.get_all_metadata()
             logger.info("files pathes loaded!.")
-            for meta in self.data:
-                data_to_pub = PathExtractor.get_metadata(meta)
-                self.publisher.publish(config.KAFKA_TOPIC,data_to_pub)
-            logger.info(f"Published data into topic {config.KAFKA_TOPIC}")
-
+            if self.data:
+                for meta in self.data:
+                    self.publisher.publish(config.KAFKA_TOPIC,meta)
+                logger.info(f"Published data into topic {config.KAFKA_TOPIC}")
         except Exception as e:
             logger.error(f"Error in main loop: {e}")
 
