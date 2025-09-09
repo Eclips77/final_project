@@ -17,6 +17,11 @@ class Stage1Manager:
         self.data = None
     
     def main(self):
+        """
+        manage the meta data creator service
+
+        create the meta data and publish it into kafka.
+        """
         try:
             self.data = self.data_creator.get_all_metadata()
             logger.info("files pathes loaded!.")
