@@ -1,62 +1,45 @@
-import speech_recognition as sr
-from ..utils import config
-# import os
-import logging
-
-logger = logging.getLogger(__name__)
+from faster_whisper import WhisperModel
+from ...tools.logger import Logger
+logger = Logger.get_logger()
 
 
-class SpeechToTextConverter:
-    def __init__(self):
-        self.recognizer = sr.Recognizer()
-        # self.pathes = self.read_file_paths(config.FILES_PATH)
-
-    def transcribe_audio_file(self, audio_file_path):
+class AudioProcessor:
+    """
+    A  class to process audio files using the Whisper model for transcription.
+    """
+    def __init__(self, model_size="small", device="cpu", compute_type="int8"):
         """
-        Transcribes speech from an audio file.
-
+        Initializes the AudioProcessor with a Whisper model.
         Args:
-            audio_file_path (str): The path to the audio file (e.g., .wav).
-
-        Returns:
-            str: The transcribed text, or None if an error occurs.
+            model_size (str): The size of the Whisper model.
+            device (str): The device to run the model on.
+            compute_type (str): The compute type for the model.
         """
-        try:
-            with sr.AudioFile(audio_file_path) as source:
-                audio_data = self.recognizer.record(source)
-                text = self.recognizer.recognize_google(audio_data)
-                logger.info(f"audio file converted to text.")
-                return text
-        except sr.UnknownValueError:
-            logger.error("Google Speech Recognition could not understand audio.")
-            return None
-        except sr.RequestError as e:
-            logger.error(f"Could not request results from Google Speech Recognition service; {e}")
-            return None
-        except FileNotFoundError:
-            logger.error(f"Audio file not found at: {audio_file_path}")
-            return None
+        self.model = WhisperModel(model_size, device=device, compute_type=compute_type)
+        logger.info(f"Whisper model loaded: {model_size} ({device}, {compute_type})")
 
-#     @staticmethod
-#     def read_file_paths(directory:str)->list[str]:
-#         """
-#         a method that returns all the file pathes in a directory
+    def transcribe_audio(self, audio_path: str, task="transcribe", beam_size=5, vad_filter=True):
+        """
+        Transcribes an audio file.
+        Args:
+            audio_path (str): The path to the audio file.
+            task (str): The task for the model.
+            beam_size (int): The beam size for decoding.
+            vad_filter (bool): Whether to use the VAD filter.
+        Returns:
+            A str of the transcription info.
+        """
 
-#         Args:
-
-#             directory path str.
-#         Returns:
-        
-#                 all the files pathes in the directory.
-#         """
-#         return [os.path.join(directory, file) for file in os.listdir(directory) if os.path.isfile(os.path.join(directory, file))]
-
-#  if __name__ == "__main__":
-#     converter = SpeechToTextConverter()
-#     path = converter.pathes[5]
-#     x = converter.transcribe_audio_file(path)
-#     if x:
-#         print(f"converted data {x}")
-
-      
+        logger.info(f"Transcribing {audio_path}...")
+        segments, info = self.model.transcribe(
+            str(audio_path),
+            task=task,
+            beam_size=beam_size,
+            vad_filter=vad_filter
+        )
+        logger.info(f"Detected language '{info.language}' with probability {info.language_probability:.2f}")
+        transcription = ""
+        for segment in segments:
+            transcription += segment.text + " "
+        return transcription.strip()
 
