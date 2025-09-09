@@ -17,20 +17,32 @@ class ASRPipeline:
         self.file_service = FileMetadataService(config.DATA_DIR)
         self.ids = self.file_service.retrive_all_ids()
 
-    def process_ids(self)-> List[str] :
+
+    def process_ids(self, file_ids: List[str]) -> List[Dict[str, str]]:
         """
         Processes a list of GridFS file ids: returns [{"id": str, "text": str}] after updating ES.
         """
-        temp_files = [self.fetcher.write_one(id) for id in self.ids]
-        temp_files = [self.transcriber.transcribe_audio(file["path"])for file in temp_files]
-        return temp_files
+        results: List[Dict[str, str]] = []
+        for fid in file_ids:
+            temp_file = self.fetcher.write_one(fid)
+            transcription_result = self.transcriber.transcribe_audio(temp_file["path"])
+            self.updater.update_document_by_field("id",temp_file["id"],transcription_result)
+            results.append({"id": temp_file["id"], "text": transcription_result})
+            try:
+                os.remove(temp_file["path"])
+            except Exception:
+                pass
+        self.updater.es.indices.refresh(index=self.updater.es_index)
+        return results
+    
+    def main(self):
+        self.process_ids(self.ids)
 
-    def tts_manager(self):
 
 
-    def es_update_manager(self,field_name:str = "id"):
-        for id in self.ids:
-            self.updater.update_document_by_field(field_name,id,"ddd")
+    # def es_update_manager(self,field_name:str = "id"):
+    #     for id in self.ids:
+    #         self.updater.update_document_by_field(field_name,id,"ddd")
 
 
   
