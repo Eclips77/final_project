@@ -24,8 +24,7 @@ class KafkaPubSub:
             message (dict): Message to send
         """
         try:
-            for m in message:
-                self._producer.send(topic, value=m)
+            self._producer.send(topic, value=message)
             self._producer.flush()
             logger.info(f"Message published to topic '{topic}': {message}")
         except Exception as e:
