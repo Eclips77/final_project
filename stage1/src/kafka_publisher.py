@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 class KafkaPubSub:
     """Generic Kafka publisher and subscriber using kafka-python."""
 
-    def __init__(self, bootstrap_servers: str) -> None:
+    def __init__(self, bootstrap_servers: List[str]) -> None:
         self.bootstrap_servers = bootstrap_servers
         self._producer = KafkaProducer(bootstrap_servers=self.bootstrap_servers, value_serializer=lambda v: json_util.dumps(v).encode('utf-8'))
         logger.info(f"Kafka Producer initialized with bootstrap servers: {bootstrap_servers}")
@@ -16,7 +16,7 @@ class KafkaPubSub:
     def producer(self):
         return self._producer
 
-    def publish(self, topic: str, message: List[dict]):
+    def publish(self, topic: str, message: dict):
         """
         Publish a message to a Kafka topic
         
