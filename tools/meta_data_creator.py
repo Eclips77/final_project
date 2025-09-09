@@ -50,7 +50,7 @@ class FileMetadataService:
             "_id": self._create_hash_id(path),
             "file_path": path,
             "size": stats.st_size,
-            "create_date": datetime.date.fromtimestamp(stats.st_ctime,),
+            "create_date": datetime.date.fromtimestamp(stats.st_ctime,).isoformat(),
             "modified": stats.st_mtime,
             "file_name":os.path.basename(path),
             "permissions": stat.filemode(stats.st_mode),
@@ -61,3 +61,10 @@ class FileMetadataService:
         return a list of dicts with the meta data.
         """
         return [self.get_metadata(f) for f in self.list_files()]
+
+
+# if __name__ == "__main__":
+#     drt = FileMetadataService("C:/Users/brdwn/Desktop/my_projects/final_proj_data")
+#     x = drt.get_all_metadata()
+#     z = x[0]
+#     print(type(z["create_date"]))

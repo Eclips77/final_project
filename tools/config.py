@@ -1,7 +1,7 @@
 import os
 from typing import List
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..","..","..",".."))
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..","..","..")) # i removed one ".."
 DATA_DIR = os.path.join(BASE_DIR, "final_proj_data")
 
 # a variable to get the audio files path
@@ -43,10 +43,7 @@ ES_MAPPING = {
         "type": "keyword" 
       },
       "create_date": { 
-        "type": "date",
-        "format": "yyyy-MM-dd HH:mm:ssXXX||strict_date_optional_time||epoch_millis",
-        "ignore_malformed": True,
-        "null_value": None
+        "type": "keyword"
       }, 
       "file_name": { 
         "type": "keyword"
