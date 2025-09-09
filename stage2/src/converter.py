@@ -1,4 +1,3 @@
-from pathlib import Path
 from faster_whisper import WhisperModel
 from ...tools.logger import Logger
 logger = Logger.get_logger()
@@ -6,15 +5,15 @@ logger = Logger.get_logger()
 
 class AudioProcessor:
     """
-    A generic class to process audio files using the Whisper model for transcription.
+    A  class to process audio files using the Whisper model for transcription.
     """
     def __init__(self, model_size="small", device="cpu", compute_type="int8"):
         """
         Initializes the AudioProcessor with a Whisper model.
         Args:
-            model_size (str): The size of the Whisper model (e.g., "tiny", "base", "small").
-            device (str): The device to run the model on ("cpu" or "cuda").
-            compute_type (str): The compute type for the model (e.g., "int8", "float16").
+            model_size (str): The size of the Whisper model.
+            device (str): The device to run the model on.
+            compute_type (str): The compute type for the model.
         """
         self.model = WhisperModel(model_size, device=device, compute_type=compute_type)
         logger.info(f"Whisper model loaded: {model_size} ({device}, {compute_type})")
@@ -23,12 +22,12 @@ class AudioProcessor:
         """
         Transcribes an audio file.
         Args:
-            audio_path (Path): The path to the audio file.
+            audio_path (str): The path to the audio file.
             task (str): The task for the model ("transcribe" or "translate").
             beam_size (int): The beam size for decoding.
             vad_filter (bool): Whether to use the VAD filter.
         Returns:
-            A tuple containing the list of segments and transcription info.
+            A str that contains the text transcribed.
         """
         try:
             segments,info = self.model.transcribe(
@@ -44,9 +43,4 @@ class AudioProcessor:
         except Exception as e:
             logger.error(f"transcribe failed: {e}")
             raise
-
-
-
-
-
 
