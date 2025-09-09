@@ -14,11 +14,11 @@ class MongoStore:
         self.db = self.client[db_name]
         self.fs = gridfs.GridFS(self.db)
 
-    def exists(self, file_id: str) -> bool:
+    def exists(self, file_id: int) -> bool:
         """Return True if a file with the given ID exists in GridFS."""
         return self.db.fs.files.find_one({"_id": file_id}) is not None
 
-    def save_file(self, file_id: str, file_path: str) -> str:
+    def save_file(self, file_id: int, file_path: str) -> int:
         """
         save a file into the db.
 
@@ -36,7 +36,7 @@ class MongoStore:
             logger.info(f"file stored successfully")
         return file_id
 
-    def get_file(self, file_id: str) -> bytes:
+    def get_file(self, file_id: int) -> bytes:
         """Retrieve a file's raw bytes by ID."""
         file_obj = self.fs.get(file_id)
         return file_obj.read()

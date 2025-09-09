@@ -10,4 +10,4 @@ class IdFctory:
 
     @staticmethod
     def create_hash(name:str):
-        return str(hash(name))
+        return hash(name)
