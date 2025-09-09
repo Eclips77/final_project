@@ -43,7 +43,8 @@ ES_MAPPING = {
         "type": "keyword" 
       },
       "create_date": { 
-        "type": "keyword"
+        "type": "date",
+        "format":"strict_date_optional_time||epoch_millis"
       }, 
       "file_name": { 
         "type": "keyword"
