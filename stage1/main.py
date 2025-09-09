@@ -1,6 +1,6 @@
 from . import config
 from .src.kafka_publisher import KafkaPubSub
-from .src.path_reader import PathExtractor
+from ..tools.path_reader import PathExtractor
 import logging
 
 logging.basicConfig(
