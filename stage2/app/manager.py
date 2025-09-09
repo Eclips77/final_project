@@ -1,6 +1,6 @@
 from ..src.consumer import Consumer
 from ...tools.id_factory import IdFctory
-from ..util import config
+from ...tools import config
 from ..src.mongo_dal import MongoStore
 from ..src.elastic_client import EsIndexer
 import os
@@ -46,7 +46,6 @@ class Stage2Manager:
         docs = []
         try:
             for doc in self.consumer:
-                doc["_id"] = self.id_factory.create_hash(doc["file_path"])
                 docs.append(doc)
             self.es.index_many(docs)
             logger.info(f"metadata indexed successfully")

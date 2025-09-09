@@ -1,7 +1,7 @@
 import logging
 from elasticsearch import Elasticsearch
 from datetime import datetime
-from ..stage2.util import config
+from . import config
 
 class Logger:
     _logger = None
