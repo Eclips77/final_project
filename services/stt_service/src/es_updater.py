@@ -25,7 +25,7 @@ class ElasticUpdater:
                 }
             },
             "script": {
-                "source": "ctx._source.tts = params.update_data",
+                "source": "ctx._source.tts_data = params.update_data",
                 "lang": "painless",
                 "params": {
                     "update_data": update_data
