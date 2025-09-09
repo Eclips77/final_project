@@ -1,4 +1,5 @@
 import uuid
+import hashlib
 
 class IdFctory:
     """
@@ -10,5 +11,5 @@ class IdFctory:
 
     @staticmethod
     def create_hash(name:str):
-        return str(hash(name))
+        return hashlib.sha256(name.encode("utf-8")).hexdigest()
     

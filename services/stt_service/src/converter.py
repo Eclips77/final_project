@@ -1,5 +1,5 @@
 from faster_whisper import WhisperModel
-from ...tools.logger import Logger
+from ....tools.logger import Logger
 logger = Logger.get_logger()
 
 
@@ -36,10 +36,8 @@ class AudioProcessor:
                 beam_size=beam_size,
                 vad_filter=vad_filter
             )
-            transcription = ""
-            for segment in segments:
-                transcription += segment.text + " "
-            return transcription.strip()
+            text = "".join(seg.text for seg in segments)
+            return text
         except Exception as e:
             logger.error(f"transcribe failed: {e}")
             raise

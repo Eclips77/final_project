@@ -1,7 +1,7 @@
 import os
 from typing import List
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..","..","..",".."))
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..","..","..")) # i removed one ".."
 DATA_DIR = os.path.join(BASE_DIR, "final_proj_data")
 
 # a variable to get the audio files path
@@ -27,7 +27,7 @@ ES_HOST: str = os.getenv("ES_HOST","http://localhost:9200")
 ES_MAPPING = {
   "mappings": {
     "properties": {
-      "_id": { 
+      "id": { 
         "type": "keyword"
       },
       "size": {
@@ -44,15 +44,16 @@ ES_MAPPING = {
       },
       "create_date": { 
         "type": "date",
-        "format": "yyyy-MM-dd HH:mm:ssXXX||strict_date_optional_time||epoch_millis",
-        "ignore_malformed": True,
-        "null_value": None
+        "format":"strict_date_optional_time||epoch_millis"
       }, 
       "file_name": { 
         "type": "keyword"
       },
       "file_path": { 
         "type": "keyword" 
+      },
+      "tts_data":{
+          "type":"text"
       }
     }
   }
