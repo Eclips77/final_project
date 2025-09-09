@@ -1,55 +1,52 @@
+from pathlib import Path
 from faster_whisper import WhisperModel
+from ...tools.logger import Logger
+logger = Logger.get_logger()
 
-class SpeechToTextConverter:
-    """
-    A class to convert speech to text using the Faster Whisper model.
-    """
 
-    def __init__(self, model_size="small", device="cpu", compute_type="float32"):
+class AudioProcessor:
+    """
+    A generic class to process audio files using the Whisper model for transcription.
+    """
+    def __init__(self, model_size="small", device="cpu", compute_type="int8"):
         """
-        Initializes the SpeechToTextConverter with a specified Faster Whisper model.
-
+        Initializes the AudioProcessor with a Whisper model.
         Args:
-            model_size (str): The size of the Whisper model to use (e.g., "tiny", "base", "small", "medium", "large-v2").
+            model_size (str): The size of the Whisper model (e.g., "tiny", "base", "small").
             device (str): The device to run the model on ("cpu" or "cuda").
-            compute_type (str): The compute type for the model (e.g., "float32", "int8_float16").
+            compute_type (str): The compute type for the model (e.g., "int8", "float16").
         """
         self.model = WhisperModel(model_size, device=device, compute_type=compute_type)
+        logger.info(f"Whisper model loaded: {model_size} ({device}, {compute_type})")
 
-    def transcribe_audio(self, audio_path, language=None, vad_filter=True, **kwargs):
+    def transcribe_audio(self, audio_path: str, task="transcribe", beam_size=5, vad_filter=True):
         """
-        Transcribes an audio file to text.
-
+        Transcribes an audio file.
         Args:
-            audio_path (str or np.ndarray): Path to the audio file or a NumPy array representing the audio.
-            language (str, optional): The language of the audio (e.g., "en" for English).
-                                      If None, the model will attempt to detect the language.
-            vad_filter (bool): Whether to apply voice activity detection filtering.
-            **kwargs: Additional arguments to pass to the model's transcribe method.
-
+            audio_path (Path): The path to the audio file.
+            task (str): The task for the model ("transcribe" or "translate").
+            beam_size (int): The beam size for decoding.
+            vad_filter (bool): Whether to use the VAD filter.
         Returns:
-            str: The transcribed text.
+            A tuple containing the list of segments and transcription info.
         """
-        segments, info = self.model.transcribe(
-            audio_path,
-            language=language,
-            vad_filter=vad_filter,
-            **kwargs
-        )
-        
-        transcription = ""
-        for segment in segments:
-            transcription += segment.text + " "
-        return transcription.strip()
+        try:
+            segments,info = self.model.transcribe(
+                str(audio_path),
+                task=task,
+                beam_size=beam_size,
+                vad_filter=vad_filter
+            )
+            transcription = ""
+            for segment in segments:
+                transcription += segment.text + " "
+            return transcription.strip()
+        except Exception as e:
+            logger.error(f"transcribe failed: {e}")
+            raise
 
-if __name__ == "__main__":
 
-    converter = SpeechToTextConverter(model_size="small", device="cpu") 
 
-    try:
-        transcribed_text = converter.transcribe_audio("test_audio.wav", language="en")
-        print(f"Transcription: {transcribed_text}")
-    except FileNotFoundError:
-        print("Error: 'test_audio.wav' not found. Please create or provide a valid audio file.")
-    except Exception as e:
-        print(f"An error occurred during transcription: {e}")
+
+
+
