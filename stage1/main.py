@@ -27,7 +27,7 @@ class Stage1Manager:
             for meta in self.data:
                 data_to_pub = FileReader.get_metadata(meta)
                 self.publisher.publish(config.TOPIC,data_to_pub)
-            logger.info(f"Published {len(data_to_pub)} into topic {config.TOPIC}")
+            logger.info(f"Published data into topic {config.TOPIC}")
 
         except Exception as e:
             logger.error(f"Error in main loop: {e}")

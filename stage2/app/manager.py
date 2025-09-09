@@ -1,10 +1,10 @@
 from ..src.consumer import Consumer
-from ..src.id_factory import IdFctory
+from ..util.id_factory import IdFctory
 from ..util import config
 from ..src.mongo_dal import MongoStore
 from ..src.elastic_client import EsIndexer
 import os
-from ..util.logger import Logger
+from ...tools.logger import Logger
 
 logger = Logger.get_logger()
 
@@ -17,12 +17,13 @@ class Stage2Manager:
                  mongo_db: str = config.MONGO_DB,
                  mongo_uri: str = config.MONGO_URI,
                  es_host: str = config.ES_HOST,
-                 es_index: str = config.ES_INDEX
+                 es_index: str = config.ES_INDEX,
+                 es_mapping: dict = config.ES_MAPPING
                  ):
         self.id_factory = IdFctory()
-        self.consumer = Consumer(config.KAFKA_TOPIC, config.KAFKA_BOOTSTRAP)
+        self.consumer = Consumer(config.KAFKA_TOPIC, config.KAFKA_BOOTSTRAP,config.KAFKA_CONSUMER_GROUP)
         self.mongo = MongoStore(mongo_uri=mongo_uri, db_name=mongo_db)
-        self.es = EsIndexer(es_host, es_index)
+        self.es = EsIndexer(es_host, es_index,es_mapping)
 
 
     def manage_mongo(self,files_pathes:list[str]):
@@ -35,7 +36,7 @@ class Stage2Manager:
                 self.mongo.save_file(file_id,path)
                 logger.info(f"file {file_id} indexed successfully")
         except Exception as e:
-            logger.error(f"error indexing {file_id} to mongo {e}")
+            logger.error(f"Error indexing to mongo {e}")
             raise
 
     def manage_elastic(self)-> list[dict]:
@@ -45,13 +46,13 @@ class Stage2Manager:
         docs = []
         try:
             for doc in self.consumer:
-                doc["id"] = self.id_factory.create_hash(doc["file_path"])
+                doc["_id"] = self.id_factory.create_hash(doc["file_path"])
                 docs.append(doc)
             self.es.index_many(docs)
             logger.info(f"metadata indexed successfully")
             return docs
         except Exception as e:
-            logger.error(f"error indexing into elastic {e}")
+            logger.error(f"Error indexing into elastic {e}")
             raise
 
     @staticmethod
