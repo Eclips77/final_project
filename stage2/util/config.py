@@ -28,7 +28,7 @@ ES_MAPPING = {
   "mappings": {
     "properties": {
       "id": { 
-        "type": "text"
+        "type": "keyword"
       },
       "size": {
         "type": "text",
