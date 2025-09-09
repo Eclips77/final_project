@@ -26,7 +26,7 @@ class MongoStore:
             file_id , file_path .
         
         Return:
-                the file id
+                the file id (int)
         """
         if self.exists(file_id):
             logger.info(f"file id alredy exsist {file_id}")
