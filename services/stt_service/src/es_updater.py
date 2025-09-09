@@ -8,7 +8,7 @@ class ElasticUpdater:
         self.es = Elasticsearch(hosts=[host])
         self.es_index = es_index
 
-    def update_document_by_field(self, field_name : str, field_value : str, update_data : str):
+    def update_document_by_field(self, field_name : str, field_value : str, update_data : str,target_field:str = "tts_data"):
         """
         update doc by field.
         Args:
@@ -19,18 +19,12 @@ class ElasticUpdater:
 
         """
         query = {
-            "query": {
-                "match": {
-                    field_name: field_value
-                }
-            },
+            "query": {"term": {field_name: {"value": field_value}}},
             "script": {
-                "source": "ctx._source.tts_data = params.update_data",
+                "source": f"ctx._source['{target_field}'] = params.v",
                 "lang": "painless",
-                "params": {
-                    "update_data": update_data
-                }
-            }
+                "params": {"v": update_data},
+            },
         }
         try:
             response = self.es.update_by_query(index=self.es_index, body=query,refresh=True,)
@@ -40,4 +34,4 @@ class ElasticUpdater:
             logger.error(f"error updating data {e}")
             raise
             
-
+     
