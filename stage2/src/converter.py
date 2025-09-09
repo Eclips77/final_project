@@ -1,5 +1,4 @@
 import speech_recognition as sr
-from ..util import config
 # import os
 import logging
 
@@ -16,7 +15,7 @@ class SpeechToTextConverter:
         Transcribes speech from an audio file.
 
         Args:
-            audio_file_path (str): The path to the audio file (e.g., .wav).
+            audio_file_path (str): The path to the audio file.
 
         Returns:
             str: The transcribed text, or None if an error occurs.

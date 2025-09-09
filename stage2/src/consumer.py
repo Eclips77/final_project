@@ -1,7 +1,7 @@
 from typing import Dict, Iterator
 from bson import json_util
 from kafka import KafkaConsumer
-from ..util.logger import Logger
+from ...tools.logger import Logger
 
 logger = Logger.get_logger()
 

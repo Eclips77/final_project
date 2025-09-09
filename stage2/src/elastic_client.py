@@ -1,6 +1,6 @@
 from typing import Dict, List
 from elasticsearch import Elasticsearch, helpers
-from ..util.logger import Logger
+from ...tools.logger import Logger
 
 logger = Logger.get_logger()
 

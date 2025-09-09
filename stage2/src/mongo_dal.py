@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 import gridfs
-from ..util.logger import Logger
+from ...tools.logger import Logger
 
 logger = Logger.get_logger()
 

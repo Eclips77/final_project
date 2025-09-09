@@ -4,7 +4,7 @@ from ..util import config
 from ..src.mongo_dal import MongoStore
 from ..src.elastic_client import EsIndexer
 import os
-from ..util.logger import Logger
+from ...tools.logger import Logger
 
 logger = Logger.get_logger()
 
@@ -36,7 +36,7 @@ class Stage2Manager:
                 self.mongo.save_file(file_id,path)
                 logger.info(f"file {file_id} indexed successfully")
         except Exception as e:
-            logger.error(f"error indexing {file_id} to mongo {e}")
+            logger.error(f"Error indexing to mongo {e}")
             raise
 
     def manage_elastic(self)-> list[dict]:
@@ -46,13 +46,13 @@ class Stage2Manager:
         docs = []
         try:
             for doc in self.consumer:
-                doc["id"] = self.id_factory.create_hash(doc["file_path"])
+                doc["_id"] = self.id_factory.create_hash(doc["file_path"])
                 docs.append(doc)
             self.es.index_many(docs)
             logger.info(f"metadata indexed successfully")
             return docs
         except Exception as e:
-            logger.error(f"error indexing into elastic {e}")
+            logger.error(f"Error indexing into elastic {e}")
             raise
 
     @staticmethod
