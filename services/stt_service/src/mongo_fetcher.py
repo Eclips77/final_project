@@ -41,11 +41,6 @@ class GridFSToTempWav:
             logger.error(f"error reriving chunk {e}")
             raise
     
-    def write_many(self,files_id: List[str])-> List[Dict]:
-        temp_files_data = []
-        for file_id in files_id:
-            temp_files_data.append(self.write_one(file_id))
-        return temp_files_data
 
 
 # if __name__ == "__main__":
