@@ -1,14 +1,9 @@
 from ..tools import config
 from .src.kafka_publisher import KafkaPubSub
 from ..tools.path_reader import PathExtractor
-import logging
+from ..tools.logger import Logger
 
-logging.basicConfig(
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    level=logging.INFO
-)
-logger = logging.getLogger(__name__)
+logger = Logger.get_logger()
 
 
 class Stage1Manager:

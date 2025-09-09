@@ -1,9 +1,8 @@
 from kafka import KafkaProducer
 from bson import json_util
 from typing import List
-import logging
-
-logger = logging.getLogger(__name__)
+from ...tools.logger import Logger
+logger = Logger.get_logger()
 class KafkaPubSub:
     """Generic Kafka publisher and subscriber using kafka-python."""
 

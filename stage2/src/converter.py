@@ -1,61 +1,55 @@
-import speech_recognition as sr
-# import os
-import logging
-
-logger = logging.getLogger(__name__)
-
+from faster_whisper import WhisperModel
 
 class SpeechToTextConverter:
-    def __init__(self):
-        self.recognizer = sr.Recognizer()
-        # self.pathes = self.read_file_paths(config.FILES_PATH)
+    """
+    A class to convert speech to text using the Faster Whisper model.
+    """
 
-    def transcribe_audio_file(self, audio_file_path):
+    def __init__(self, model_size="small", device="cpu", compute_type="float32"):
         """
-        Transcribes speech from an audio file.
+        Initializes the SpeechToTextConverter with a specified Faster Whisper model.
 
         Args:
-            audio_file_path (str): The path to the audio file.
+            model_size (str): The size of the Whisper model to use (e.g., "tiny", "base", "small", "medium", "large-v2").
+            device (str): The device to run the model on ("cpu" or "cuda").
+            compute_type (str): The compute type for the model (e.g., "float32", "int8_float16").
+        """
+        self.model = WhisperModel(model_size, device=device, compute_type=compute_type)
+
+    def transcribe_audio(self, audio_path, language=None, vad_filter=True, **kwargs):
+        """
+        Transcribes an audio file to text.
+
+        Args:
+            audio_path (str or np.ndarray): Path to the audio file or a NumPy array representing the audio.
+            language (str, optional): The language of the audio (e.g., "en" for English).
+                                      If None, the model will attempt to detect the language.
+            vad_filter (bool): Whether to apply voice activity detection filtering.
+            **kwargs: Additional arguments to pass to the model's transcribe method.
 
         Returns:
-            str: The transcribed text, or None if an error occurs.
+            str: The transcribed text.
         """
-        try:
-            with sr.AudioFile(audio_file_path) as source:
-                audio_data = self.recognizer.record(source)
-                text = self.recognizer.recognize_google(audio_data)
-                logger.info(f"audio file converted to text.")
-                return text
-        except sr.UnknownValueError:
-            logger.error("Google Speech Recognition could not understand audio.")
-            return None
-        except sr.RequestError as e:
-            logger.error(f"Could not request results from Google Speech Recognition service; {e}")
-            return None
-        except FileNotFoundError:
-            logger.error(f"Audio file not found at: {audio_file_path}")
-            return None
-
-#     @staticmethod
-#     def read_file_paths(directory:str)->list[str]:
-#         """
-#         a method that returns all the file pathes in a directory
-
-#         Args:
-
-#             directory path str.
-#         Returns:
+        segments, info = self.model.transcribe(
+            audio_path,
+            language=language,
+            vad_filter=vad_filter,
+            **kwargs
+        )
         
-#                 all the files pathes in the directory.
-#         """
-#         return [os.path.join(directory, file) for file in os.listdir(directory) if os.path.isfile(os.path.join(directory, file))]
+        transcription = ""
+        for segment in segments:
+            transcription += segment.text + " "
+        return transcription.strip()
 
-#  if __name__ == "__main__":
-#     converter = SpeechToTextConverter()
-#     path = converter.pathes[5]
-#     x = converter.transcribe_audio_file(path)
-#     if x:
-#         print(f"converted data {x}")
+if __name__ == "__main__":
 
-      
+    converter = SpeechToTextConverter(model_size="small", device="cpu") 
 
+    try:
+        transcribed_text = converter.transcribe_audio("test_audio.wav", language="en")
+        print(f"Transcription: {transcribed_text}")
+    except FileNotFoundError:
+        print("Error: 'test_audio.wav' not found. Please create or provide a valid audio file.")
+    except Exception as e:
+        print(f"An error occurred during transcription: {e}")
