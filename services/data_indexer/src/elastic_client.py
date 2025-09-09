@@ -22,8 +22,8 @@ class EsIndexer:
 
     def index_many(self, docs):
         actions = [
-            {"_op_type": "index", "_index": self.index, "_id": d["_id"], "_source": d}
+            {"_op_type": "index", "_index": self.index, "_source": d}
             for d in docs
         ]
-        success, _ = helpers.bulk(self.es, actions, stats_only=True)
+        success, _ = helpers.bulk(self.es, actions,,stats_only=True)
         return success
