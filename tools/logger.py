@@ -7,7 +7,7 @@ class Logger:
     _logger = None
     @classmethod
     def get_logger(cls, name="logger", es_host=config.ES_HOST,
-        index="logging_index", level=logging.DEBUG):
+index="logging_index", level=logging.DEBUG):
         if cls._logger:
             return cls._logger
         logger = logging.getLogger(name)
@@ -20,7 +20,6 @@ class Logger:
                     try:
                         es.index(index=index, document={
                         "timestamp": datetime.utcnow().isoformat(),
-
                         "level": record.levelname,
                         "logger": record.name,
                         "message": record.getMessage()
@@ -28,8 +27,8 @@ class Logger:
                         })
                     except Exception as e:
                         print(f"ES log failed: {e}")
-                        logger.addHandler(ESHandler())
-                        logger.addHandler(logging.StreamHandler())
+            logger.addHandler(ESHandler())
+            logger.addHandler(logging.StreamHandler())
 
         cls._logger = logger
         return logger
