@@ -1,53 +1,63 @@
 import os
 import stat
 import datetime
+import hashlib
 from .logger import Logger
 logger = Logger.get_logger()
+from typing import List, Dict, Any
 
-class PathExtractor:
-    @staticmethod
-    def read_file_paths(directory:str)->list[str]:
+class FileMetadataService:
+    def _init_(self, directory: str):
+        self.directory = directory
+
+    def list_files(self) -> List[str]:
         """
-        a method that returns all the file pathes in a directory
+        get the files path.
 
-        Args:
-
-            directory path str.
         Returns:
-        
-                all the files pathes in the directory.
+                List[str] of the files paths in a directory.
         """
-        return [os.path.join(directory, file) for file in os.listdir(directory) if os.path.isfile(os.path.join(directory, file))]
+        return [
+            os.path.join(self.directory, f)
+            for f in os.listdir(self.directory)
+            if os.path.isfile(os.path.join(self.directory, f))
+        ]
 
-    @staticmethod
-    def get_metadata(file_path:str)-> dict:
+    def _create_hash_id(self, path: str) -> str:
         """
-        a method to get metadata about file.
+        creates a unique id from file path.
 
         Args:
-            file_path str.
-        Return:
-                dict of the meta data about the file.
+            file path (str).
+
+        Returns:
+                unique id number (str).
         """
-        if os.path.exists(file_path):
-            file_stats = os.stat(file_path)
-            logger.info(f"file exist in {file_path}")
-            return {
-                '_id': PathExtractor._create_hash(file_path),
-                'size': file_stats.st_size,
-                'permissions': stat.filemode(file_stats.st_mode),
-                'create_date': datetime.date.fromtimestamp(file_stats.st_ctime),
-                "file_name":os.path.basename(file_path),
-                'file_path':file_path
-            }
-        else:
-            logger.error(f"error create metadata from {file_path}")
-            return {}
-    
-    @staticmethod
-    def _create_hash(name:str):
-        return hash(name)
+        return hashlib.sha256(path.encode("utf-8")).hexdigest()
 
+    def get_metadata(self, path: str) -> Dict[str, Any]:
+        """
+        create a dict of the metat data about file.
 
+        Args:
+             file path (str) .
+        Return:
+                dict with all the meta data.
 
+        """
+        stats = os.stat(path)
+        return {
+            "_id": self._create_hash_id(path),
+            "file_path": path,
+            "size": stats.st_size,
+            "create_date": datetime.date.fromtimestamp(stats.st_ctime,),
+            "modified": stats.st_mtime,
+            "file_name":os.path.basename(path),
+            "permissions": stat.filemode(stats.st_mode),
+        }
 
+    def get_all_metadata(self) -> List[Dict[str, Any]]:
+        """
+        return a list of dicts with the meta data.
+        """
+        return [self.get_metadata(f) for f in self.list_files()]
