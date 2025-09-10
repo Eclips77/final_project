@@ -57,7 +57,7 @@ services:
     environment:
       DATA_DIR: /mnt/data
     volumes:
-      - /C:/Users/brdwn/Desktop/my_projects/final_proj_data:/mnt/data:ro
+      - ${DATA_DIR}:/mnt/data:ro
     depends_on:
       - kafka
 
@@ -69,7 +69,7 @@ services:
     environment:
       DATA_DIR: /mnt/data
     volumes:
-      - /C:/Users/brdwn/Desktop/my_projects/final_proj_data:/mnt/data:ro
+      - ${DATA_DIR}:/mnt/data:ro
     depends_on:
       - kafka
       - mongodb
@@ -94,5 +94,8 @@ services:
     depends_on:
       - elasticsearch
       - stt-service
-
+volumes:
+  esdata:
+  
+  
   
