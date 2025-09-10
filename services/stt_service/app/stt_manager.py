@@ -12,7 +12,7 @@ class TtsManager:
     """
     def __init__(self) -> None:
         self.fetcher = GridFSToTempWav(config.MONGO_URI,config.MONGO_DB)
-        self.transcriber = AudioProcessor()
+        self.transcriber = AudioProcessor(model_path = config.MODEL_PATH_ENV_VAR)
         self.updater = ElasticUpdater(config.ES_HOST, config.ES_INDEX)
         self.file_service = FileMetadataService(config.DATA_DIR)
         self.ids = self.file_service.retrive_all_ids()

@@ -46,7 +46,7 @@ services:
   meta-creator-service:
     build:
       context: .
-      dockerfile: ./docker_files/meta_creator.Dockerfile
+      dockerfile: ./meta_creator.Dockerfile
     image: meta-creator-service:v1.0
     ports:
       - "3000:3000"
@@ -59,7 +59,7 @@ services:
   data-indexer-service:
     build:
       context: .
-      dockerfile: ./docker_files/data_indexer.Dockerfile
+      dockerfile: ./data_indexer.Dockerfile
     image: data-indexer-service:v1.0
     ports:
       - "3001:3001"
@@ -75,7 +75,7 @@ services:
   stt-service:
     build:
       context: .
-      dockerfile: ./docker_files/stt_service.Dockerfile
+      dockerfile: ./stt_service.Dockerfile
     image: stt-service:v1.0
     ports:
       - "3002:3002"
@@ -86,7 +86,7 @@ services:
   bds-service:
     build:
       context: .
-      dockerfile: ./docker_files/bds_service.Dockerfile
+      dockerfile: ./bds_service.Dockerfile
     image: bds-service:v1.0
     ports:
       - "3003:3003"

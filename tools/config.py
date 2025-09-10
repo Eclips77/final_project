@@ -27,6 +27,7 @@ KAFKA_CONSUMER_GROUP: str = os.getenv("KAFKA_CONSUMER_GROUP", "metadata_group")
 # a variable to get the elastic connection info
 ES_HOST: str = os.getenv("ES_HOST","elasticsearch://localhost:9200")
 
+MODEL_PATH_ENV_VAR = os.getenv("FASTER_WHISPER_MODEL_PATH","C:/Users/brdwn/.cache/huggingface/hub/")
 
 ES_MAPPING = {
   "mappings": {

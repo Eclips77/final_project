@@ -1,5 +1,7 @@
 from faster_whisper import WhisperModel
 from ....tools.logger import Logger
+import os
+from ....tools import config
 logger = Logger.get_logger()
 
 
@@ -7,7 +9,7 @@ class AudioProcessor:
     """
     A  class to process audio files using the Whisper model for transcription.
     """
-    def __init__(self):
+    def __init__(self,model_path):
         """
         Initializes the AudioProcessor with a Whisper model.
         Args:
@@ -15,8 +17,8 @@ class AudioProcessor:
             device (str): The device to run the model on.
             compute_type (str): The compute type for the model.
         """
-        self.model = WhisperModel("tiny.en", device="cpu", compute_type="int8")
-        logger.info(f"Whisper model loaded. )")
+        self.model = WhisperModel(model_path, device="cpu", compute_type="int8")
+        logger.info(f"Whisper model loaded)")
 
     def transcribe_audio(self, audio_path: str, task="transcribe", beam_size=5, vad_filter=True):
         """
