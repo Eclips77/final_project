@@ -11,7 +11,7 @@ class Base64Parser:
     def _split(self,text: str) -> Tuple[List[str], List[Tuple[str, str]]]:
         singles, pairs = [], []
         for token in text.split(","):
-            parts = token.strip().split()
+            parts = token.lower().strip().split()
             if len(parts) == 1:
                 singles.append(parts[0])
             elif len(parts) == 2:

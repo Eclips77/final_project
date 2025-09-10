@@ -12,10 +12,10 @@ class RiskScorer:
         pair_risky: List[Tuple[str, str]],
         pair_very_risky: List[Tuple[str, str]],
     ):
-        self.single_risky = set(w.lower() for w in single_risky)
-        self.single_very_risky = set(w.lower() for w in single_very_risky)
-        self.pair_risky = set((a.lower(), b.lower()) for a, b in pair_risky)
-        self.pair_very_risky = set((a.lower(), b.lower()) for a, b in pair_very_risky)
+        self.single_risky = single_risky
+        self.single_very_risky = single_very_risky
+        self.pair_risky = pair_risky
+        self.pair_very_risky = pair_very_risky
 
     def score_percent(self, text: str) -> float:
         """
