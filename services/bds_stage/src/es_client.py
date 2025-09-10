@@ -48,7 +48,7 @@ class EsClientor:
                   "query": {
                         "match_all": {} 
                     },
-                    "_source": ["id","text"],
+                    "_source": ["id","tts_data"],
                     "size": limit                
                 }
             )

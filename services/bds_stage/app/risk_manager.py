@@ -21,14 +21,37 @@ class RiskManager:
         scorer = RiskScorer(n_d_single,dang_single,m_d_pairs,danger_pairs)
         return scorer
 
-    def score_dicts(self,doc_loc: str = "text"):
+    def score_dicts(self,doc_loc: str = "tts_data"):
         scoring_dicts = []
         docs = self.es.get_documents_limited(34)
         for doc in docs:
             scoring_dict = self.scorer.dict_builder(doc[doc_loc])
             scoring_dict["id"] = doc["id"]
             scoring_dicts.append(scoring_dict)
+        return scoring_dicts
+    
+    def update_docs(self,updating_list:list[dict]):
+        for update_dict in updating_list:
+                try:
+                    id = update_dict.pop("id")
+                    self.es.update_document(id,update_dict)
+                    logger.info(f"doc {id} updating.")
+                except Exception as e:
+                    logger.error(f"error updating duc {e} ")
+
+
+    def main_flow(self):
+        self._create_scoring()
+        dicts_list = self.score_dicts()
+        self.update_docs(dicts_list)
+
+
+if __name__ == "__main__":
+    risk_manager = RiskManager()
+    risk_manager.main_flow()
+           
         
+
             
             
 

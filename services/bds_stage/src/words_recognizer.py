@@ -56,7 +56,9 @@ class RiskScorer:
         effective_words = n - pairs_found
         if effective_words == 0:
             return 0.0
-        return (points * 100.0) / effective_words
+        result = (points * 100.0) / effective_words
+        result = round(result, 2)
+        return result
     
     def _boolean_danger_score(self,danger_percent:float)->bool:
         """
@@ -97,15 +99,13 @@ class RiskScorer:
 
 
 
-# if __name__ == "__main__":
-#     z = ["gaza"]
-#     s = ["gun"]
-#     d = [("war","crime")]
-#     w = [("adi","died")]
+if __name__ == "__main__":
+    z = ["gaza"]
+    s = ["gun"]
+    d = [("war","crime")]
+    w = [("adi","died")]
 
-#     risker = RiskScorer(z,s,d,w)
-#     txt = "i am in london gaza is war crime dd dd kklk lklk"
-#     abd =risker.score_percent(txt)
-#     print(f" txt {abd:.2f} percent danger")
-#     s = risker.risk_level_score(9)
-#     print(s)
+    risker = RiskScorer(z,s,d,w)
+    txt = "i am in london gaza is war crime adi died  dd dd kklk lklk ggg ggg ggg gg g g g g gg gg g g"
+    xxx = risker.dict_builder(txt)
+    print(xxx)

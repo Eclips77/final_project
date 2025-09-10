@@ -37,15 +37,6 @@ class Consumer:
             logger.error(f"Error consuming message: {e}")
             raise
 
-    def commit(self) -> None:
-        """Commit the current offset explicitly."""
-        try:
-            self._consumer.commit()
-            logger.debug("Offset committed successfully")
-        except Exception as e:
-            logger.error(f"Error committing offset: {e}")
-            raise
-
     def close(self) -> None:
         """Close the consumer."""
         try:
