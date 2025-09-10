@@ -9,7 +9,7 @@ COPY requirements.txt ./
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./services/data_indexer app/services/
+COPY ./services/data_indexer /app/services/
 
 COPY ./tools /app/
 

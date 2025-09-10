@@ -23,7 +23,7 @@ from faster_whisper import WhisperModel
 WhisperModel("tiny.en")
 PY
 
-COPY ./services/stt_service app/services/
+COPY ./services/stt_service /app/services/
 COPY tools /app/tools
 
 

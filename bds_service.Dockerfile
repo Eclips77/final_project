@@ -9,7 +9,7 @@ COPY requirements.txt ./
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./services/bds_stage services/app/
+COPY ./services/bds_stage /app/services/
 
 COPY ./tools /app/
 
