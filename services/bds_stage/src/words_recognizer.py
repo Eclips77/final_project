@@ -17,7 +17,7 @@ class RiskScorer:
         self.pair_risky = set((a.lower(), b.lower()) for a, b in pair_risky)
         self.pair_very_risky = set((a.lower(), b.lower()) for a, b in pair_very_risky)
 
-    def score(self, text: str) -> float:
+    def score_percent(self, text: str) -> float:
         """
         Calculate risk percentage for given text.
 
@@ -58,6 +58,25 @@ class RiskScorer:
         return (points * 100.0) / effective_words
     
 
+    def boolean_danger_score(self,danger_percent:float)->bool:
+        return True if danger_percent >= 10 else False
+
+    def risk_level_score(self,danger_percent: float)->str:
+        """
+        calculate risk level by percents
+
+        0 - 10 = none. one of a 10 word is risky
+
+        10 - 20  = medium.  between 1 in 10 and 1 in 5 word is risky
+
+        20 ++ = high. word in 5 or more is risky
+
+        """
+        if danger_percent >= 10:
+            return "medium"
+        elif danger_percent >=20:
+            return "high"
+        return "none"
 
 # if __name__ == "__main__":
 #     z = ["gaza"]
