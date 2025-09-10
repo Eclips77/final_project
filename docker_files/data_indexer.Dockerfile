@@ -1,14 +1,13 @@
-FROM python:3.8-slim
+FROM python:311-slim
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY requirements.txt ./
 
-# Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./services/data_indexer /usr/src/app/
+COPY ./services/data_indexer /services/app/
 
-COPY ./tools /usr/src/app/
+COPY ./tools /app/
 
-CMD [ "python","-m", "./data_indexer/src.manager" ]
+CMD [ "python","-m", "services.data_indexer.app.manager" ]

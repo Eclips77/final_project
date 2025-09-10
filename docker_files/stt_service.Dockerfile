@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN python - <<'PY'
 from faster_whisper import WhisperModel
 import os
-WhisperModel("tiny.en", download_root=os.environ["FWHISPER_MODEL_DIR"])
+WhisperModel("tiny.en")
 PY
 
 COPY services/tts_service /app/services
