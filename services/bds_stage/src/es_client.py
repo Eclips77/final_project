@@ -4,7 +4,7 @@ from typing import List,Dict
 
 logger = Logger.get_logger()
 
-class ElasticsearchDocumentManager:
+class EsClientor:
     def __init__(self, host :str,es_index : str,mapping: dict):
         """
         Initializes the ElasticsearchDocumentManager.
