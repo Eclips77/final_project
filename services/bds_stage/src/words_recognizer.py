@@ -59,6 +59,13 @@ class RiskScorer:
     
 
     def boolean_danger_score(self,danger_percent:float)->bool:
+        """
+        calc if danger percents is danger
+
+        if risk level is not none = danger.
+
+        """
+    
         return True if danger_percent >= 10 else False
 
     def risk_level_score(self,danger_percent: float)->str:
@@ -72,11 +79,11 @@ class RiskScorer:
         20 ++ = high. word in 5 or more is risky
 
         """
-        if danger_percent >= 10:
+        if danger_percent < 10:
+            return "none"
+        elif danger_percent < 20:
             return "medium"
-        elif danger_percent >=20:
-            return "high"
-        return "none"
+        return "high"
 
 # if __name__ == "__main__":
 #     z = ["gaza"]
@@ -86,5 +93,7 @@ class RiskScorer:
 
 #     risker = RiskScorer(z,s,d,w)
 #     txt = "i am in london gaza is war crime dd dd kklk lklk"
-#     abd =risker.score(txt)
+#     abd =risker.score_percent(txt)
 #     print(f" txt {abd:.2f} percent danger")
+#     s = risker.risk_level_score(9)
+#     print(s)
