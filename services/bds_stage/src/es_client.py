@@ -19,41 +19,31 @@ class EsClientor:
         self.es_index = es_index
         self.es_mapping = mapping
 
- 
-    def update_document(self, index, doc_id, body):
+    def update_document_by_field(self, field_name : str, field_value : str, update_data : str,target_field:str = "tts_data"):
         """
-        Updates an existing document in a specified index.
-
+        update doc by field.
         Args:
-            index (str): The name of the Elasticsearch index.
-            doc_id (str): The ID of the document to update.
-            body (dict): A dictionary containing the fields to update or a script.
+            field_name (str)
+            field_value (str)
+            update_data (str)  data to update.
 
-        Returns:
-            dict or None: The update response if successful, otherwise None.
+
         """
+        query = {
+            "query": {"term": {field_name: {"value": field_value}}},
+            "script": {
+                "source": f"ctx._source['{target_field}'] = params.v",
+                "lang": "painless",
+                "params": {"v": update_data},
+            },
+        }
         try:
-            response = self.es.update(index=index, id=doc_id, body=body)
-            if response:
-                logger.info(f"doc {doc_id} updated")
+            response = self.es.update_by_query(index=self.es_index, body=query,refresh=True,)
+            logger.info(f"doc {field_value} indexed.")
             return response
         except Exception as e:
-            logger.error(f"Error updating document: {e}")
-            return None
-
-    def partial_update_document(self,  doc_id, partial_doc):
-        """
-        Performs a partial update on a document.
-
-        Args:
-            index (str): The name of the Elasticsearch index.
-            doc_id (str): The ID of the document to update.
-            partial_doc (dict): A dictionary containing the fields to update.
-        
-        Returns:
-            dict or None: The update response if successful, otherwise None.
-        """
-        return self.update_document(self.es_index, doc_id, {"doc": partial_doc})
+            logger.error(f"error updating data {e}")
+            raise
 
     def get_documents_limited(self,limit:int)-> List[Dict]:
         """
@@ -69,11 +59,12 @@ class EsClientor:
             response = self.es.search(
                 index=self.es_index,
                 body={
-                    "query": {
-                        "match_all": {}  
-                    }
-                },
-                size=limit  
+                  "query": {
+                        "match_all": {} 
+                    },
+                    "_source": ["id","text"],
+                    "size": limit                
+                }
             )
             documents = [hit['_source'] for hit in response['hits']['hits']]
             logger.info(f"retrieved {len(documents)} docs from elastic index")

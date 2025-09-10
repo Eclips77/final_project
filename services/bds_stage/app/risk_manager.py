@@ -13,6 +13,16 @@ class RiskManager:
     def __init__(self):
         self.parser = Base64Parser()
         self.es = EsClientor(config.ES_HOST,config.ES_INDEX,config.ES_MAPPING)
-
+        self.scorer = self._create_scoring()
     
-    def 
+    def _create_scoring(self):
+        n_d_singel,m_d_pairs = self.parser.decode_flow(config.NOT_DANGER_LIST)
+        dang_singel,danger_pairs = self.parser.decode_flow(config.DANGER_LIST)
+        return RiskScorer(n_d_singel,dang_singel,m_d_pairs,danger_pairs)
+
+    def score_dicts(self):
+        docs = self.es.get_documents_limited(34)
+        for doc in docs:
+            
+            
+

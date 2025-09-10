@@ -16,8 +16,9 @@ class RiskScorer:
         self.single_very_risky = single_very_risky
         self.pair_risky = pair_risky
         self.pair_very_risky = pair_very_risky
+        self._scoring_dict = {}
 
-    def score_percent(self, text: str) -> float:
+    def _score_percent(self, text: str) -> float:
         """
         Calculate risk percentage for given text.
 
@@ -57,8 +58,7 @@ class RiskScorer:
             return 0.0
         return (points * 100.0) / effective_words
     
-
-    def boolean_danger_score(self,danger_percent:float)->bool:
+    def _boolean_danger_score(self,danger_percent:float)->bool:
         """
         calc if danger percents is danger
 
@@ -68,7 +68,7 @@ class RiskScorer:
     
         return True if danger_percent >= 10 else False
 
-    def risk_level_score(self,danger_percent: float)->str:
+    def _risk_level_score(self,danger_percent: float)->str:
         """
         calculate risk level by percents
 
@@ -84,6 +84,20 @@ class RiskScorer:
         elif danger_percent < 20:
             return "medium"
         return "high"
+
+    def dict_builder(self,text:str,danger_percent:float):
+        self._scoring_dict["bds_percent"] = self._score_percent(text)
+        self._scoring_dict["is_bds"] = self._boolean_danger_score(danger_percent)
+        self._scoring_dict["bds_threat_level"] = self._risk_level_score(danger_percent)
+
+    @property
+    def retrieve_scoring_dict(self):
+        return self._scoring_dict
+
+
+
+
+
 
 # if __name__ == "__main__":
 #     z = ["gaza"]
