@@ -54,6 +54,10 @@ services:
     image: meta-creator-service:v1.0
     ports:
       - "3000:3000"
+    environment:
+      DATA_DIR: /mnt/data
+    volumes:
+      - /C:/Users/brdwn/Desktop/my_projects/final_proj_data:/mnt/data:ro
     depends_on:
       - kafka
 
@@ -65,7 +69,7 @@ services:
     environment:
       DATA_DIR: /mnt/data
     volumes:
-      - /absolute/path/on/host/final_proj_data:/mnt/data:ro
+      - /C:/Users/brdwn/Desktop/my_projects/final_proj_data:/mnt/data:ro
     depends_on:
       - kafka
       - mongodb
