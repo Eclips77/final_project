@@ -44,7 +44,7 @@ ES_MAPPING = {
       },
       "create_date": { 
         "type": "date",
-        "format":"strict_date_optional_time||epoch_millis"
+        "format":"yyyy-MM-dd"
       }, 
       "file_name": { 
         "type": "keyword"
@@ -54,6 +54,15 @@ ES_MAPPING = {
       },
       "tts_data":{
           "type":"text"
+      },
+      "bds_percent":{
+          "type":"keyword"
+      },
+      "is_bds":{
+          "type":"boolean"
+      },
+      "bds_threat_level":{
+          "type":"keyword"
       }
     }
   }
