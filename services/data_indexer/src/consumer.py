@@ -27,25 +27,6 @@ class Consumer:
         )
         logger.info(f"Kafka consumer initialized for topic: {topic}, group: {group_id}")
 
-    def __iter__(self) -> Iterator[Dict]:
-        """Iterate over incoming messages as dictionaries."""
-        try:
-            for msg in self._consumer:
-                logger.debug(f"Received message from partition {msg.partition}, offset {msg.offset}")
-                yield msg.value
-        except Exception as e:
-            logger.error(f"Error consuming message: {e}")
-            raise
-
-    def commit(self) -> None:
-        """Commit the current offset explicitly."""
-        try:
-            self._consumer.commit()
-            logger.debug("Offset committed successfully")
-        except Exception as e:
-            logger.error(f"Error committing offset: {e}")
-            raise
-
     def close(self) -> None:
         """Close the consumer."""
         try:

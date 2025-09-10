@@ -12,12 +12,13 @@ class RiskScorer:
         pair_risky: List[Tuple[str, str]],
         pair_very_risky: List[Tuple[str, str]],
     ):
-        self.single_risky = set(w.lower() for w in single_risky)
-        self.single_very_risky = set(w.lower() for w in single_very_risky)
-        self.pair_risky = set((a.lower(), b.lower()) for a, b in pair_risky)
-        self.pair_very_risky = set((a.lower(), b.lower()) for a, b in pair_very_risky)
+        self.single_risky = single_risky
+        self.single_very_risky = single_very_risky
+        self.pair_risky = pair_risky
+        self.pair_very_risky = pair_very_risky
+        # self._scoring_dict = {}
 
-    def score_percent(self, text: str) -> float:
+    def _score_percent(self, text: str) -> float:
         """
         Calculate risk percentage for given text.
 
@@ -55,10 +56,11 @@ class RiskScorer:
         effective_words = n - pairs_found
         if effective_words == 0:
             return 0.0
-        return (points * 100.0) / effective_words
+        result = (points * 100.0) / effective_words
+        result = round(result, 2)
+        return result
     
-
-    def boolean_danger_score(self,danger_percent:float)->bool:
+    def _boolean_danger_score(self,danger_percent:float)->bool:
         """
         calc if danger percents is danger
 
@@ -68,7 +70,7 @@ class RiskScorer:
     
         return True if danger_percent >= 10 else False
 
-    def risk_level_score(self,danger_percent: float)->str:
+    def _risk_level_score(self,danger_percent: float)->str:
         """
         calculate risk level by percents
 
@@ -85,6 +87,18 @@ class RiskScorer:
             return "medium"
         return "high"
 
+    def dict_builder(self,text:str):
+        scoring_dict = {}
+        danger_perc = self._score_percent(text)
+        scoring_dict["bds_percent"] = danger_perc
+        scoring_dict["is_bds"] = self._boolean_danger_score(danger_perc)
+        scoring_dict["bds_threat_level"] = self._risk_level_score(danger_perc)
+        return scoring_dict
+
+
+
+
+
 # if __name__ == "__main__":
 #     z = ["gaza"]
 #     s = ["gun"]
@@ -92,8 +106,6 @@ class RiskScorer:
 #     w = [("adi","died")]
 
 #     risker = RiskScorer(z,s,d,w)
-#     txt = "i am in london gaza is war crime dd dd kklk lklk"
-#     abd =risker.score_percent(txt)
-#     print(f" txt {abd:.2f} percent danger")
-#     s = risker.risk_level_score(9)
-#     print(s)
+#     txt = "i am in london gaza is war crime adi died  dd dd kklk lklk ggg ggg ggg gg g g g g gg gg g g"
+#     xxx = risker.dict_builder(txt)
+#     print(xxx)

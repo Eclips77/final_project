@@ -4,7 +4,7 @@ from typing import List,Dict
 
 logger = Logger.get_logger()
 
-class ElasticsearchDocumentManager:
+class EsClientor:
     def __init__(self, host :str,es_index : str,mapping: dict):
         """
         Initializes the ElasticsearchDocumentManager.
@@ -19,41 +19,17 @@ class ElasticsearchDocumentManager:
         self.es_index = es_index
         self.es_mapping = mapping
 
- 
-    def update_document(self, index, doc_id, body):
-        """
-        Updates an existing document in a specified index.
-
-        Args:
-            index (str): The name of the Elasticsearch index.
-            doc_id (str): The ID of the document to update.
-            body (dict): A dictionary containing the fields to update or a script.
-
-        Returns:
-            dict or None: The update response if successful, otherwise None.
-        """
+    def update_document(self, doc_id: str, update_body: Dict, refresh: bool =True):
+                                                
         try:
-            response = self.es.update(index=index, id=doc_id, body=body)
-            if response:
-                logger.info(f"doc {doc_id} updated")
-            return response
+            return self.es.update(
+                    index=self.es_index, 
+                    id=doc_id, 
+                    body={"doc":update_body},
+                    refresh=refresh
+                )
         except Exception as e:
-            logger.error(f"Error updating document: {e}")
-            return None
-
-    def partial_update_document(self,  doc_id, partial_doc):
-        """
-        Performs a partial update on a document.
-
-        Args:
-            index (str): The name of the Elasticsearch index.
-            doc_id (str): The ID of the document to update.
-            partial_doc (dict): A dictionary containing the fields to update.
-        
-        Returns:
-            dict or None: The update response if successful, otherwise None.
-        """
-        return self.update_document(self.es_index, doc_id, {"doc": partial_doc})
+            logger.error(f"Failed to update document with ID '{doc_id}': {str(e)}")
 
     def get_documents_limited(self,limit:int)-> List[Dict]:
         """
@@ -69,11 +45,12 @@ class ElasticsearchDocumentManager:
             response = self.es.search(
                 index=self.es_index,
                 body={
-                    "query": {
-                        "match_all": {}  
-                    }
-                },
-                size=limit  
+                  "query": {
+                        "match_all": {} 
+                    },
+                    "_source": ["id","tts_data"],
+                    "size": limit                
+                }
             )
             documents = [hit['_source'] for hit in response['hits']['hits']]
             logger.info(f"retrieved {len(documents)} docs from elastic index")

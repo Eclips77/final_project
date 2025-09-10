@@ -1,8 +1,12 @@
 import os
 from typing import List
+from pathlib import Path
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..","..","..")) # i removed one ".."
-DATA_DIR = os.path.join(BASE_DIR, "final_proj_data")
+# BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..","..","..")) # i removed one ".."
+# DATA_DIR = os.path.join(BASE_DIR, "final_proj_data")
+
+DATA_DIR = os.getenv("DATA_DIR","C:/Users/brdwn/Desktop/my_projects/final_proj_data")
+
 
 # a variable to get the audio files path
 FILES_PATH : str = os.getenv("FILES_PATH",DATA_DIR)
@@ -17,12 +21,13 @@ MONGODB_COLLECTION : str = os.getenv("MONGODB_COLLECTION","podcasts")
 # a variable to get the kafka topic
 KAFKA_TOPIC : str = os.getenv("KAFKA_TOPIC","metadata")
 # a variable to get the server bootstrap
-KAFKA_BOOTSTRAP: List[str] = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092").split(",")
+KAFKA_BOOTSTRAP: List[str] = os.getenv("KAFKA_BOOTSTRAP", "kafka://localhost:9092").split(",")
 # a variable to get the kafka consumer group
 KAFKA_CONSUMER_GROUP: str = os.getenv("KAFKA_CONSUMER_GROUP", "metadata_group")
 # a variable to get the elastic connection info
-ES_HOST: str = os.getenv("ES_HOST","http://localhost:9200")
+ES_HOST: str = os.getenv("ES_HOST","elasticsearch://localhost:9200")
 
+MODEL_PATH_ENV_VAR = os.getenv("FASTER_WHISPER_MODEL_PATH","C:/Users/brdwn/.cache/huggingface/hub/")
 
 ES_MAPPING = {
   "mappings": {
@@ -69,5 +74,6 @@ ES_MAPPING = {
 }
 
 
+NOT_DANGER_LIST = "RnJlZWRvbSBGbG90aWxsYSxSZXNpc3RhbmNlLExpYmVyYXRpb24sRnJlZSBQYWxlc3RpbmUsR2F6YSxDZWFzZWZpcmUsUHJvdGVzdCxVTlJXQQ=="
 
-
+DANGER_LIST = "R2Vub2NpZGUsV2FyIENyaW1lcyxBcGFydGhlaWQsTWFzc2FjcmUsTmFrYmEsRGlzcGxhY2VtZW50LEh1bWFuaXRhcmlhbiBDcmlzaXMsQmxvY2thZGUsT2NjdXBhdGlvbixSZWZ1Z2VlcyxJQ0MsQkRT"
