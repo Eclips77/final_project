@@ -25,7 +25,7 @@ class EsClientor:
             return self.es.update(
                     index=self.es_index, 
                     id=doc_id, 
-                    body=update_body, 
+                    body={"doc":update_body},
                     refresh=refresh
                 )
         except Exception as e:

@@ -4,6 +4,9 @@ from typing import List
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..","..","..")) # i removed one ".."
 DATA_DIR = os.path.join(BASE_DIR, "final_proj_data")
 
+DATA_DIR_2 = os.getenv("")
+
+
 # a variable to get the audio files path
 FILES_PATH : str = os.getenv("FILES_PATH",DATA_DIR)
 # a variable to get the mongo connection info

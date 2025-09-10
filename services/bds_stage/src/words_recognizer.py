@@ -99,13 +99,13 @@ class RiskScorer:
 
 
 
-if __name__ == "__main__":
-    z = ["gaza"]
-    s = ["gun"]
-    d = [("war","crime")]
-    w = [("adi","died")]
+# if __name__ == "__main__":
+#     z = ["gaza"]
+#     s = ["gun"]
+#     d = [("war","crime")]
+#     w = [("adi","died")]
 
-    risker = RiskScorer(z,s,d,w)
-    txt = "i am in london gaza is war crime adi died  dd dd kklk lklk ggg ggg ggg gg g g g g gg gg g g"
-    xxx = risker.dict_builder(txt)
-    print(xxx)
+#     risker = RiskScorer(z,s,d,w)
+#     txt = "i am in london gaza is war crime adi died  dd dd kklk lklk ggg ggg ggg gg g g g g gg gg g g"
+#     xxx = risker.dict_builder(txt)
+#     print(xxx)
