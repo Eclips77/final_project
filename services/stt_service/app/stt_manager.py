@@ -39,10 +39,8 @@ class TtsManager:
         self.process_ids(self.ids)
 
 
-
-    # def es_update_manager(self,field_name:str = "id"):
-    #     for id in self.ids:
-    #         self.updater.update_document_by_field(field_name,id,"ddd")
-
+if __name__ == "__main__":
+    tts_manager = TtsManager()
+    tts_manager.main
 
   
