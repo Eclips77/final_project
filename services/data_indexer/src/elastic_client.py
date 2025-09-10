@@ -22,7 +22,7 @@ class EsIndexer:
 
     def index_doc(self, document):
         try:
-            response = self.es.index(index=self.index,document=document)
+            response = self.es.index(index=self.index,document=document,id=document["id"])
             logger.info(f"doc {document} indexed.")
             return response
         except Exception as e:

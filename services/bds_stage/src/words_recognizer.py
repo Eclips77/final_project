@@ -16,7 +16,7 @@ class RiskScorer:
         self.single_very_risky = single_very_risky
         self.pair_risky = pair_risky
         self.pair_very_risky = pair_very_risky
-        self._scoring_dict = {}
+        # self._scoring_dict = {}
 
     def _score_percent(self, text: str) -> float:
         """
@@ -85,15 +85,13 @@ class RiskScorer:
             return "medium"
         return "high"
 
-    def dict_builder(self,text:str,danger_percent:float):
-        self._scoring_dict["bds_percent"] = self._score_percent(text)
-        self._scoring_dict["is_bds"] = self._boolean_danger_score(danger_percent)
-        self._scoring_dict["bds_threat_level"] = self._risk_level_score(danger_percent)
-
-    @property
-    def retrieve_scoring_dict(self):
-        return self._scoring_dict
-
+    def dict_builder(self,text:str):
+        scoring_dict = {}
+        danger_perc = self._score_percent(text)
+        scoring_dict["bds_percent"] = danger_perc
+        scoring_dict["is_bds"] = self._boolean_danger_score(danger_perc)
+        scoring_dict["bds_threat_level"] = self._risk_level_score(danger_perc)
+        return scoring_dict
 
 
 

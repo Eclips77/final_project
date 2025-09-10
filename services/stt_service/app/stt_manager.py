@@ -41,6 +41,6 @@ class TtsManager:
 
 if __name__ == "__main__":
     tts_manager = TtsManager()
-    tts_manager.main
+    tts_manager.main()
 
   

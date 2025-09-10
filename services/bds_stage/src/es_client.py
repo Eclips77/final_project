@@ -19,31 +19,17 @@ class EsClientor:
         self.es_index = es_index
         self.es_mapping = mapping
 
-    def update_document_by_field(self, field_name : str, field_value : str, update_data : str,target_field:str = "tts_data"):
-        """
-        update doc by field.
-        Args:
-            field_name (str)
-            field_value (str)
-            update_data (str)  data to update.
-
-
-        """
-        query = {
-            "query": {"term": {field_name: {"value": field_value}}},
-            "script": {
-                "source": f"ctx._source['{target_field}'] = params.v",
-                "lang": "painless",
-                "params": {"v": update_data},
-            },
-        }
+    def update_document(self, doc_id: str, update_body: Dict, refresh: bool =True):
+                                                
         try:
-            response = self.es.update_by_query(index=self.es_index, body=query,refresh=True,)
-            logger.info(f"doc {field_value} indexed.")
-            return response
+            return self.es.update(
+                    index=self.es_index, 
+                    id=doc_id, 
+                    body=update_body, 
+                    refresh=refresh
+                )
         except Exception as e:
-            logger.error(f"error updating data {e}")
-            raise
+            logger.error(f"Failed to update document with ID '{doc_id}': {str(e)}")
 
     def get_documents_limited(self,limit:int)-> List[Dict]:
         """
